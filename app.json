@@ -2,16 +2,32 @@
   "expo": {
     "name": "BitBuzz",
     "slug": "bitbuzz",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "bitbuzz",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "automatic",
+    "platforms": ["ios", "android", "web"],
     "android": {
       "package": "app.bitbuzz.mobile",
       "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#000000"
+        "backgroundColor": "#050505"
       }
+    },
+    "ios": {
+      "bundleIdentifier": "app.bitbuzz.mobile",
+      "supportsTablet": true,
+      "buildNumber": "1"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }
