@@ -5,7 +5,8 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "bitbuzz",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "dark",
+    "icon": "https://cdn.hackclub.com/019eb6cc-8925-7919-8d68-9add6a3d295f/bitbuzz_kids_logo.jpg",
     "platforms": ["ios", "android", "web"],
     "android": {
       "package": "app.bitbuzz.mobile",
