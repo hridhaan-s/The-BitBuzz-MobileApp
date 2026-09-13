@@ -1,0 +1,27 @@
+name: BitBuzz Mobile CI
+
+on:
+  push:
+    branches:
+      - main
+      - production/apple-news-v1
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.19.x
+      - name: Install dependencies
+        run: npm install
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Export web bundle
+        run: npx expo export --platform web
