@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/hcb-mobile-design-system-9fc7ee37-2de3-4503-8b1c-0174bc811c36/colors_and_type.css">
+<script src="_ds/hcb-mobile-design-system-9fc7ee37-2de3-4503-8b1c-0174bc811c36/_ds_bundle.js"></script>
+<style>
+body{margin:0;background:#08080a;font-family:'Phantom Sans',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#ffc48f;text-decoration:none}a:hover{color:#ffd8b6}
+::-webkit-scrollbar{width:0;height:0}
+.bbp{transition:transform .18s cubic-bezier(.2,.85,.3,1),opacity .18s ease}
+.bbp:active{transform:scale(.965)}
+@keyframes bbFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bbSheet{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes bbScrim{from{opacity:0}to{opacity:1}}
+</style></helmet>
+
+<div style="min-height:100vh;background:#08080a;color:#fff;padding:44px 44px 64px;display:flex;flex-direction:column;align-items:center;gap:26px">
+
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" dark="{{ true }}" hint-size="402px,874px">
+<div style="position:relative;height:874px;background:#000;overflow:hidden;font-family:'Phantom Sans',-apple-system,system-ui,sans-serif">
+
+<div ref="{{ scrollRef }}" onScroll="{{ onScroll }}" style="height:100%;overflow-y:auto;overflow-x:hidden;background:#000">
+
+<!-- ════════ AUTH ════════ -->
+<sc-if value="{{ isAuth }}" hint-placeholder-val="{{ false }}">
+<div style="min-height:874px;display:flex;flex-direction:column;padding:88px 24px 46px;background:#000">
+<img src="https://cdn.hackclub.com/019eb6cc-8925-7919-8d68-9add6a3d295f/bitbuzz_kids_logo.jpg" alt="BitBuzz" style="width:52px;height:52px;border-radius:26px">
+<h1 style="margin:26px 0 0;font-size:38px;line-height:1.04;letter-spacing:-2px;font-weight:800;text-wrap:balance">{{ authTitle }}</h1>
+<p style="margin:14px 0 0;font-size:17px;line-height:1.5;color:rgba(255,255,255,.5);text-wrap:pretty">{{ authSubtitle }}</p>
+
+<sc-if value="{{ authTabsVisible }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;gap:4px;margin-top:28px;padding:4px;border-radius:14px;background:#141416">
+<button onClick="{{ authSignin }}" class="bbp" style="flex:1;height:42px;border-radius:11px;border:none;cursor:pointer;background:{{ tabSigninBg }};color:{{ tabSigninFg }};font-size:15px;font-weight:600;font-family:inherit;letter-spacing:-.3px">Sign in</button>
+<button onClick="{{ authSignup }}" class="bbp" style="flex:1;height:42px;border-radius:11px;border:none;cursor:pointer;background:{{ tabSignupBg }};color:{{ tabSignupFg }};font-size:15px;font-weight:600;font-family:inherit;letter-spacing:-.3px">Create account</button>
+</div>
+</sc-if>
+
+<div style="margin-top:22px;display:flex;flex-direction:column;gap:12px">
+<div>
+<div style="font-size:14px;font-weight:600;color:rgba(255,255,255,.42);margin-bottom:9px">Email</div>
+<input value="{{ authEmail }}" onChange="{{ onAuthEmail }}" placeholder="you@example.com" style="width:100%;box-sizing:border-box;height:52px;padding:0 17px;border-radius:15px;background:#141416;border:none;color:#fff;font-family:inherit;font-size:17px;outline:none;letter-spacing:-.3px">
+</div>
+<sc-if value="{{ authNeedsPassword }}" hint-placeholder-val="{{ true }}">
+<div>
+<div style="font-size:14px;font-weight:600;color:rgba(255,255,255,.42);margin-bottom:9px">Password</div>
+<input type="password" value="{{ authPassword }}" onChange="{{ onAuthPassword }}" placeholder="At least 6 characters" style="width:100%;box-sizing:border-box;height:52px;padding:0 17px;border-radius:15px;background:#141416;border:none;color:#fff;font-family:inherit;font-size:17px;outline:none;letter-spacing:-.3px">
+</div>
+</sc-if>
+<sc-if value="{{ authIsSignup }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font-size:14px;font-weight:600;color:rgba(255,255,255,.42);margin-bottom:9px">Confirm password</div>
+<input type="password" value="{{ authConfirm }}" onChange="{{ onAuthConfirm }}" placeholder="Type it again" style="width:100%;box-sizing:border-box;height:52px;padding:0 17px;border-radius:15px;background:#141416;border:none;color:#fff;font-family:inherit;font-size:17px;outline:none;letter-spacing:-.3px">
+</div>
+</sc-if>
+</div>
+
+<sc-if value="{{ authError }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:14px;padding:14px 16px;border-radius:14px;background:#22100f;font-size:14.5px;line-height:1.5;color:#ff7a6e;text-wrap:pretty">{{ authError }}</div>
+</sc-if>
+<sc-if value="{{ authMessage }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:14px;padding:14px 16px;border-radius:14px;background:#0d1f18;font-size:14.5px;line-height:1.5;color:#7ee0a1;text-wrap:pretty">{{ authMessage }}</div>
+</sc-if>
+
+<button onClick="{{ authSubmit }}" class="bbp" style="width:100%;height:54px;margin-top:18px;border-radius:16px;border:none;background:#ffc48f;color:#1b1206;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:-.3px">{{ authCta }}</button>
+
+<sc-if value="{{ authIsSignin }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ authForgot }}" class="bbp" style="margin-top:16px;background:none;border:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:600;color:#ffc48f;padding:4px">Forgot password?</button>
+</sc-if>
+<sc-if value="{{ authIsForgot }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ authSignin }}" class="bbp" style="margin-top:16px;background:none;border:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:600;color:#ffc48f;padding:4px">Back to sign in</button>
+</sc-if>
+
+<sc-if value="{{ authNeedsPassword }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;gap:14px;margin-top:26px">
+<span style="flex:1;height:1px;background:rgba(255,255,255,.1)"></span>
+<span style="font-size:13.5px;color:rgba(255,255,255,.3)">or</span>
+<span style="flex:1;height:1px;background:rgba(255,255,255,.1)"></span>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">
+<button onClick="{{ authProvider }}" class="bbp" style="width:100%;height:52px;border-radius:15px;border:none;background:#fff;color:#000;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;letter-spacing:-.3px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M16.3 12.7c0-2 1.6-3 1.7-3-.9-1.4-2.4-1.5-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 6 1 8 .7 1 1.5 2.1 2.5 2 1-.1 1.4-.6 2.6-.6s1.5.6 2.6.6c1.1 0 1.8-1 2.4-2 .8-1.1 1.1-2.2 1.1-2.3 0 0-2.2-.8-2.2-3.1zM14.4 6.4c.5-.6.9-1.5.8-2.4-.8 0-1.8.5-2.3 1.2-.5.6-.9 1.5-.8 2.4.9.1 1.8-.5 2.3-1.2z"></path></svg>
+Continue with Apple</button>
+<button onClick="{{ authProvider }}" class="bbp" style="width:100%;height:52px;border-radius:15px;border:none;background:#141416;color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;letter-spacing:-.3px">
+<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.7h5.4a4.6 4.6 0 01-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z"></path><path fill="#34A853" d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0012 22z"></path><path fill="#FBBC05" d="M6.4 13.9a6 6 0 010-3.8V7.5H3.1a10 10 0 000 9l3.3-2.6z"></path><path fill="#EA4335" d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.8-2.8A10 10 0 003.1 7.5l3.3 2.6C7.2 7.7 9.4 5.9 12 5.9z"></path></svg>
+Continue with Google</button>
+</div>
+</sc-if>
+
+<div style="margin-top:auto;padding-top:30px;text-align:center;font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.34);text-wrap:pretty">By continuing you agree to BitBuzz's terms and <a href="#" onClick="{{ goPrivacy }}" style="color:#ffc48f;font-weight:600">privacy notice</a>. We only use account information for authentication and the features described there.</div>
+</div>
+</sc-if>
+
+<!-- ════════ PRIVACY ════════ -->
+<sc-if value="{{ isPrivacy }}" hint-placeholder-val="{{ false }}">
+<div style="background:#000;padding:114px 22px 60px;min-height:874px">
+<div style="font-size:12px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:#ff3b30">BitBuzz policy</div>
+<h1 style="margin:14px 0 0;font-size:40px;line-height:1.02;letter-spacing:-2.2px;font-weight:800">Privacy Policy.</h1>
+<p style="margin:14px 0 0;font-size:15px;color:rgba(255,255,255,.38)">Last updated: 15 September 2026</p>
+<div style="margin-top:38px;display:flex;flex-direction:column;gap:32px">
+<sc-for list="{{ privacySections }}" as="p" hint-placeholder-count="8">
+<div>
+<h2 style="margin:0 0 14px;font-size:22px;line-height:1.22;font-weight:700;letter-spacing:-.8px">{{ p.title }}</h2>
+<div style="display:flex;flex-direction:column;gap:16px">
+<sc-for list="{{ p.paras }}" as="t" hint-placeholder-count="2">
+<p style="margin:0;font-size:17px;line-height:1.68;font-weight:450;color:rgba(255,255,255,.8);text-wrap:pretty">{{ t.text }}</p>
+</sc-for>
+</div>
+</div>
+</sc-for>
+<div style="padding-top:26px;border-top:1px solid rgba(255,255,255,.09);font-size:15px;line-height:1.6;color:rgba(255,255,255,.4);text-wrap:pretty">This page is a plain-language privacy notice, not legal advice. As BitBuzz expands its account features and serves students, we will review the policy and consent flows with appropriate legal guidance.</div>
+</div>
+</div>
+</sc-if>
+
+<!-- ════════ DELETE ACCOUNT ════════ -->
+<sc-if value="{{ isDelete }}" hint-placeholder-val="{{ false }}">
+<div style="background:#000;padding:114px 20px 60px;min-height:874px">
+<h1 style="margin:0;font-size:36px;line-height:1.04;letter-spacing:-1.7px;font-weight:800">Delete account</h1>
+<p style="margin:14px 0 0;font-size:17px;line-height:1.55;color:rgba(255,255,255,.5);text-wrap:pretty">This removes your BitBuzz account permanently. It cannot be undone, and we cannot recover it for you afterwards.</p>
+
+<div style="margin-top:26px;padding:20px;border-radius:22px;background:#1a0d0c">
+<div style="font-size:12px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:#ff3b30;margin-bottom:16px">What gets deleted</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ deleteRemoves }}" as="d" hint-placeholder-count="4">
+<div style="display:flex;gap:12px;align-items:flex-start"><span style="flex:none;width:6px;height:6px;border-radius:3px;background:#ff3b30;margin-top:8px"></span><span style="flex:1;font-size:15.5px;line-height:1.5;color:rgba(255,255,255,.82);text-wrap:pretty">{{ d.text }}</span></div>
+</sc-for>
+</div>
+</div>
+
+<div style="margin-top:12px;padding:20px;border-radius:22px;background:#0e0e10">
+<div style="font-size:12px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:rgba(255,255,255,.34);margin-bottom:12px">What stays</div>
+<p style="margin:0;font-size:15.5px;line-height:1.55;color:rgba(255,255,255,.6);text-wrap:pretty">Stories you wrote that BitBuzz has published stay on the site with your byline, because they are part of the published record. If you need a byline changed, email an editor before you delete.</p>
+</div>
+
+<div style="margin-top:26px">
+<div style="font-size:15px;font-weight:600;color:rgba(255,255,255,.45);margin-bottom:10px">Type DELETE to confirm</div>
+<input value="{{ deleteConfirm }}" onChange="{{ onDeleteConfirm }}" placeholder="DELETE" style="width:100%;box-sizing:border-box;height:52px;padding:0 17px;border-radius:15px;background:#141416;border:none;color:#fff;font-family:'Consolas',ui-monospace,Menlo,monospace;font-size:17px;letter-spacing:2px;outline:none">
+</div>
+
+<button onClick="{{ confirmDelete }}" class="bbp" style="width:100%;height:54px;margin-top:16px;border-radius:16px;border:none;background:{{ deleteBtnBg }};color:{{ deleteBtnFg }};font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:-.3px">{{ deleteBtnLabel }}</button>
+<button onClick="{{ goSettings }}" class="bbp" style="width:100%;height:50px;margin-top:8px;border-radius:16px;border:none;background:none;color:rgba(255,255,255,.55);font-size:16px;font-weight:600;cursor:pointer;font-family:inherit">Keep my account</button>
+</div>
+</sc-if>
+
+<!-- ════════ ONBOARDING ════════ -->
+<sc-if value="{{ isOnboarding }}" hint-placeholder-val="{{ false }}">
+<div style="min-height:874px;display:flex;flex-direction:column;padding:92px 24px 46px;background:#000">
+<div style="display:flex;gap:6px;margin-bottom:38px">
+<span style="flex:1;height:3px;border-radius:2px;background:#ffc48f"></span>
+<span style="flex:1;height:3px;border-radius:2px;background:#ffc48f"></span>
+<span style="flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.14)"></span>
+</div>
+<h2 style="margin:0;font-size:38px;line-height:1.04;letter-spacing:-2px;font-weight:800;text-wrap:balance">What should we wake you up for?</h2>
+<p style="margin:16px 0 0;font-size:17px;line-height:1.55;color:rgba(255,255,255,.52);text-wrap:pretty">Pick three or more. Your morning brief is built from these, and you can change them whenever you like.</p>
+<div style="display:flex;flex-wrap:wrap;gap:9px;margin-top:34px">
+<sc-for list="{{ interestChips }}" as="c" hint-placeholder-count="8">
+<button onClick="{{ c.toggle }}" class="bbp" style="display:flex;align-items:center;gap:9px;padding:0 18px;height:46px;border-radius:23px;cursor:pointer;background:{{ c.bg }};border:none;color:{{ c.fg }};font-size:16px;font-weight:600;letter-spacing:-.3px;font-family:inherit">
+<span style="width:7px;height:7px;border-radius:4px;background:{{ c.dot }}"></span>{{ c.name }}</button>
+</sc-for>
+</div>
+<div style="margin-top:auto;padding-top:34px">
+<button onClick="{{ finishOnboarding }}" class="bbp" style="width:100%;height:54px;border-radius:16px;border:none;background:#ffc48f;color:#1b1206;font-size:17px;font-weight:700;letter-spacing:-.3px;cursor:pointer;font-family:inherit">{{ onboardCta }}</button>
+<div style="text-align:center;margin-top:16px;font-size:14px;color:rgba(255,255,255,.34)">Takes ten seconds. Skip and you get everything.</div>
+</div>
+</div>
+</sc-if>
+
+<!-- ════════ TODAY ════════ -->
+<sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
+<div style="padding:0 0 128px;background:#000">
+
+<div style="padding:112px 20px 0">
+<div style="font-size:15px;font-weight:600;letter-spacing:-.1px;color:rgba(255,255,255,.4)">{{ todayDate }}</div>
+<h1 style="margin:3px 0 0;font-size:36px;line-height:1.04;letter-spacing:-1.7px;font-weight:800">Today</h1>
+</div>
+
+<sc-if value="{{ showBuzz }}" hint-placeholder-val="{{ true }}">
+<div style="margin:26px 20px 0;border-radius:26px;background:#15110b;overflow:hidden">
+<div style="padding:22px 22px 20px">
+<div style="display:flex;align-items:center;gap:9px">
+<span style="font-size:12px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:#ffc48f">Your morning brief</span>
+</div>
+<div style="margin-top:12px;font-size:25px;line-height:1.16;font-weight:700;letter-spacing:-1px;color:#fff;text-wrap:balance">{{ buzzHeadline }}</div>
+<div style="display:flex;align-items:center;gap:12px;margin-top:20px">
+<div style="flex:1;height:5px;border-radius:3px;background:rgba(255,196,143,.18);overflow:hidden"><div style="height:100%;border-radius:3px;background:#ffc48f;width:{{ buzzPct }}%"></div></div>
+<span style="flex:none;font-family:'Consolas',ui-monospace,Menlo,monospace;font-size:12px;color:rgba(255,196,143,.85);font-variant-numeric:tabular-nums">{{ buzzCount }}</span>
+</div>
+</div>
+<button onClick="{{ continueBuzz }}" class="bbp" style="width:100%;display:flex;align-items:center;gap:10px;padding:16px 22px;background:rgba(255,196,143,.09);border:none;border-top:1px solid rgba(255,196,143,.14);cursor:pointer;font-family:inherit;text-align:left">
+<span style="flex:1;font-size:16px;font-weight:600;letter-spacing:-.3px;color:#ffc48f">{{ buzzCta }}</span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffc48f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 5.5L16 12l-6.5 6.5"></path></svg>
+</button>
+</div>
+</sc-if>
+
+<div style="padding:34px 20px 0">
+<h2 style="margin:0 0 16px;font-size:22px;font-weight:700;letter-spacing:-.8px">Top story</h2>
+<button onClick="{{ openLead }}" class="bbp" style="display:block;width:100%;text-align:left;padding:0;border:none;background:none;cursor:pointer">
+<div style="position:relative;border-radius:24px;overflow:hidden;aspect-ratio:4/5;background:#111">
+<img src="{{ leadImage }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
+<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.92) 8%,rgba(0,0,0,.35) 48%,rgba(0,0,0,.12))"></div>
+<div style="position:absolute;left:22px;right:22px;bottom:22px">
+<div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:{{ leadHue }};margin-bottom:11px">{{ leadSection }}</div>
+<div style="font-size:33px;line-height:1.06;font-weight:800;letter-spacing:-1.6px;color:#fff;text-wrap:balance">{{ leadTitle }}</div>
+<div style="margin-top:13px;font-size:14px;font-weight:500;color:rgba(255,255,255,.62)">{{ leadByline }}</div>
+</div>
+</div>
+</button>
+</div>
+
+<div style="padding:38px 0 0">
+<h2 style="margin:0 20px 6px;font-size:22px;font-weight:700;letter-spacing:-.8px">In your desks</h2>
+<div style="padding:0 20px">
+<sc-for list="{{ feedRows }}" as="r" hint-placeholder-count="5">
+<button onClick="{{ r.open }}" class="bbp" style="display:flex;gap:16px;width:100%;text-align:left;background:none;border:none;padding:18px 0;cursor:pointer;align-items:flex-start;border-bottom:1px solid rgba(255,255,255,.07)">
+<div style="flex:1;min-width:0">
+<div style="font-size:11.5px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:{{ r.hue }};margin-bottom:8px">{{ r.section }}</div>
+<div style="font-size:18px;line-height:1.24;font-weight:700;letter-spacing:-.6px;color:#fff;text-wrap:pretty">{{ r.title }}</div>
+<div style="margin-top:9px;font-size:13.5px;color:rgba(255,255,255,.38)">{{ r.byline }}</div>
+</div>
+<div style="flex:none;width:86px;height:86px;border-radius:16px;overflow:hidden;background:#111"><img src="{{ r.image }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div style="padding:34px 20px 0">
+<h2 style="margin:0 0 16px;font-size:22px;font-weight:700;letter-spacing:-.8px">Desks</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">
+<sc-for list="{{ deskCards }}" as="d" hint-placeholder-count="6">
+<button onClick="{{ d.go }}" class="bbp" style="position:relative;border-radius:20px;overflow:hidden;border:none;background:#111;cursor:pointer;padding:0;text-align:left;aspect-ratio:3/2">
+<img src="{{ d.image }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;opacity:.55">
+<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85),rgba(0,0,0,.1))"></div>
+<div style="position:absolute;left:15px;bottom:14px;font-size:17px;font-weight:700;letter-spacing:-.5px;color:#fff">{{ d.label }}</div>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div style="margin:38px 20px 0;padding:30px 24px;border-radius:24px;background:#0e0e10;text-align:center">
+<div style="font-size:21px;font-weight:700;letter-spacing:-.7px">You're all caught up.</div>
+<div style="margin-top:9px;font-size:15px;line-height:1.5;color:rgba(255,255,255,.42);text-wrap:pretty">The next brief lands at 07:00. We'll nudge you once, never twice.</div>
+</div>
+
+</div>
+</sc-if>
+
+<!-- ════════ READER ════════ -->
+<sc-if value="{{ isReader }}" hint-placeholder-val="{{ false }}">
+<div style="background:#000;padding-bottom:64px">
+
+<sc-if value="{{ vImmersive }}" hint-placeholder-val="{{ true }}">
+<div style="position:relative">
+<div style="height:520px;background:#111"><img src="{{ artImage }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+<div style="position:absolute;inset:0;background:linear-gradient(to top,#000 3%,rgba(0,0,0,.4) 44%,rgba(0,0,0,.55))"></div>
+<div style="position:absolute;left:22px;right:22px;bottom:26px">
+<div style="font-size:12px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:{{ artHue }};margin-bottom:14px">{{ artSection }}</div>
+<h1 style="margin:0;font-size:38px;line-height:1.04;letter-spacing:-2px;font-weight:800;text-wrap:balance">{{ artTitle }}</h1>
+</div>
+</div>
+<div style="padding:22px 22px 0"><p style="margin:0;font-size:19px;line-height:1.5;font-weight:450;color:rgba(255,255,255,.6);text-wrap:pretty">{{ artStandfirst }}</p></div>
+</sc-if>
+
+<sc-if value="{{ vFocus }}" hint-placeholder-val="{{ false }}">
+<div style="padding:114px 22px 0">
+<div style="font-size:12px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:{{ artHue }};margin-bottom:16px">{{ artSection }}</div>
+<h1 style="margin:0;font-size:36px;line-height:1.06;letter-spacing:-1.8px;font-weight:800;text-wrap:balance">{{ artTitle }}</h1>
+<p style="margin:18px 0 0;font-size:19px;line-height:1.5;font-weight:450;color:rgba(255,255,255,.6);text-wrap:pretty">{{ artStandfirst }}</p>
+<div style="display:flex;gap:14px;align-items:center;margin-top:26px;padding:14px;border-radius:18px;background:#0e0e10">
+<div style="flex:none;width:64px;height:64px;border-radius:13px;overflow:hidden;background:#141416"><img src="{{ artImage }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+<div style="flex:1;min-width:0;font-size:13px;line-height:1.5;color:rgba(255,255,255,.4);text-wrap:pretty">{{ artCaption }}</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ vBriefing }}" hint-placeholder-val="{{ false }}">
+<div style="padding:114px 22px 0">
+<div style="font-size:12px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:{{ artHue }};margin-bottom:16px">{{ artSection }}</div>
+<h1 style="margin:0;font-size:32px;line-height:1.08;letter-spacing:-1.5px;font-weight:800;text-wrap:balance">{{ artTitle }}</h1>
+<div style="margin-top:24px;border-radius:22px;background:#0e0e10;padding:22px">
+<div style="font-size:12px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:18px">The thirty-second version</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<sc-for list="{{ keyPoints }}" as="k" hint-placeholder-count="3">
+<div style="display:flex;gap:14px;align-items:flex-start">
+<span style="flex:none;width:7px;height:7px;border-radius:4px;background:#ffc48f;margin-top:9px"></span>
+<span style="flex:1;font-size:17px;line-height:1.5;color:rgba(255,255,255,.88);text-wrap:pretty">{{ k.text }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+
+<div style="display:flex;align-items:center;gap:13px;margin:26px 22px 0;padding:18px 0;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)">
+<button onClick="{{ goAuthor }}" class="bbp" style="display:flex;align-items:center;gap:13px;flex:1;background:none;border:none;padding:0;cursor:pointer;text-align:left;min-width:0">
+<div style="flex:none;width:40px;height:40px;border-radius:20px;background:linear-gradient(145deg,#ffc48f,#f09a63);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1b1206">{{ artInitials }}</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:15px;font-weight:600;letter-spacing:-.3px">{{ artAuthor }}</div>
+<div style="font-family:'Consolas',ui-monospace,Menlo,monospace;font-size:11.5px;color:rgba(255,255,255,.34);margin-top:3px">{{ artStamp }}</div>
+</div>
+</button>
+<button onClick="{{ toggleFollow }}" class="bbp" style="flex:none;height:34px;padding:0 16px;border-radius:17px;border:none;background:{{ followBg }};color:{{ followFg }};font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">{{ followLabel }}</button>
+</div>
+
+<sc-if value="{{ showProse }}" hint-placeholder-val="{{ true }}">
+<div style="padding:28px 22px 0">
+<p style="margin:0 0 26px;font-size:19px;line-height:1.68;font-weight:450;color:rgba(255,255,255,.86);text-wrap:pretty">The launch window opens in a nine-day band next March, and for the first time the schedule was published before the hardware was finished. That order matters. Teams building to a public date behave differently to teams building to an internal one.</p>
+<p style="margin:0 0 26px;font-size:19px;line-height:1.68;font-weight:450;color:rgba(255,255,255,.86);text-wrap:pretty">Three subsystems are on the critical path. The descent radar is the one engineers keep naming when you ask them what keeps them up, because it is the piece with the least flight heritage and the shortest test queue.</p>
+<div style="margin:36px 0">
+<div style="font-size:26px;line-height:1.3;font-weight:700;letter-spacing:-1px;color:#fff;text-wrap:balance">"We are not short of ideas. We are short of test slots."</div>
+<div style="margin-top:14px;font-size:13.5px;font-weight:500;color:rgba(255,196,143,.85)">Systems lead, speaking on background</div>
+</div>
+<h3 style="margin:0 0 18px;font-size:24px;line-height:1.2;font-weight:700;letter-spacing:-1px">What the schedule actually buys</h3>
+<p style="margin:0 0 26px;font-size:19px;line-height:1.68;font-weight:450;color:rgba(255,255,255,.86);text-wrap:pretty">A fixed window converts an open-ended engineering problem into a queue. Suppliers get a date they can plan shifts around, and the review board gets a reason to say no to late changes.</p>
+</div>
+<div style="margin:6px 0 30px">
+<img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&amp;fit=crop&amp;w=1200&amp;q=85" alt="" style="width:100%;height:230px;object-fit:cover;display:block">
+<div style="padding:12px 22px 0;font-size:13px;line-height:1.5;color:rgba(255,255,255,.34)">Integration floor, clean room two. The descent radar has the shortest test queue of the three critical subsystems.</div>
+</div>
+<div style="padding:0 22px">
+<p style="margin:0;font-size:19px;line-height:1.68;font-weight:450;color:rgba(255,255,255,.86);text-wrap:pretty">For students watching this, the interesting part is not the rocket. It is that the whole programme is now legible from outside — dates, reviews and slip risk are all public, which makes it something you can actually learn from.</p>
+</div>
+</sc-if>
+
+<sc-if value="{{ vBriefing }}" hint-placeholder-val="{{ false }}">
+<div style="padding:28px 22px 0;display:flex;flex-direction:column;gap:30px">
+<sc-for list="{{ briefSections }}" as="b" hint-placeholder-count="3">
+<div>
+<h3 style="margin:0 0 14px;font-size:23px;line-height:1.2;font-weight:700;letter-spacing:-.9px">{{ b.title }}</h3>
+<p style="margin:0;font-size:18px;line-height:1.62;font-weight:450;color:rgba(255,255,255,.84);text-wrap:pretty">{{ b.body }}</p>
+<div style="margin-top:16px;padding:16px 18px;border-radius:16px;background:#0e0e10">
+<div style="font-size:12px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:#ffc48f;margin-bottom:8px">Why it matters</div>
+<div style="font-size:15.5px;line-height:1.55;color:rgba(255,255,255,.7);text-wrap:pretty">{{ b.why }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<div style="margin:40px 22px 0">
+<div style="font-size:15px;font-weight:600;color:rgba(255,255,255,.42);margin-bottom:14px">Was this useful?</div>
+<div style="display:flex;gap:9px">
+<sc-for list="{{ reactions }}" as="x" hint-placeholder-count="3">
+<button onClick="{{ x.pick }}" class="bbp" style="flex:1;height:50px;border-radius:15px;border:none;background:{{ x.bg }};color:{{ x.fg }};cursor:pointer;font-size:15px;font-weight:600;font-family:inherit;letter-spacing:-.3px">{{ x.label }}</button>
+</sc-for>
+</div>
+</div>
+
+<div style="margin:40px 22px 0">
+<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">
+<h3 style="margin:0;font-size:22px;font-weight:700;letter-spacing:-.8px">Up next</h3>
+<span style="margin-left:auto;font-family:'Consolas',ui-monospace,Menlo,monospace;font-size:12px;color:#ffc48f;font-variant-numeric:tabular-nums">{{ buzzRemaining }}</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ nextUp }}" as="n" hint-placeholder-count="2">
+<button onClick="{{ n.open }}" class="bbp" style="display:flex;gap:14px;align-items:center;padding:14px;border-radius:19px;background:#0e0e10;border:none;cursor:pointer;text-align:left">
+<div style="flex:none;width:58px;height:58px;border-radius:13px;overflow:hidden;background:#141416"><img src="{{ n.image }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+<div style="flex:1;min-width:0">
+<div style="font-size:11.5px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:{{ n.hue }};margin-bottom:6px">{{ n.section }}</div>
+<div style="font-size:16px;line-height:1.25;font-weight:600;letter-spacing:-.4px;color:#fff;text-wrap:pretty">{{ n.title }}</div>
+</div>
+</button>
+</sc-for>
+</div>
+</div>
+
+</div>
+</sc-if>
+
+<!-- ════════ SECTION ════════ -->
+<sc-if value="{{ isSection }}" hint-placeholder-val="{{ false }}">
+<div style="background:#000;padding-bottom:128px">
+<div style="position:relative;height:300px">
+<img src="https://images.unsplash.com/photo-1446776877081-d282a0f896e2?auto=format&amp;fit=crop&amp;w=1400&amp;q=85" alt="" style="width:100%;height:100%;object-fit:cover;display:block;opacity:.6">
+<div style="position:absolute;inset:0;background:linear-gradient(to top,#000 4%,rgba(0,0,0,.35) 50%,rgba(0,0,0,.6))"></div>
+<div style="position:absolute;left:20px;right:20px;bottom:22px">
+<h1 style="margin:0;font-size:40px;line-height:1.02;letter-spacing:-2.1px;font-weight:800">Space</h1>
+</div>
+</div>
+<div style="padding:18px 20px 0">
+<p style="margin:0;font-size:17px;line-height:1.55;color:rgba(255,255,255,.55);text-wrap:pretty">Launches, orbits, deep space and the people building the hardware. Written by students who follow the schedules, not the press releases.</p>
+<button onClick="{{ toggleFollow }}" class="bbp" style="width:100%;height:50px;margin-top:20px;border-radius:15px;border:none;background:{{ followBg }};color:{{ followFg }};font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:-.3px">{{ followDeskLabel }}</button>
+<div style="margin-top:28px">
+<sc-for list="{{ feedRows }}" as="r" hint-placeholder-count="5">
+<button onClick="{{ r.open }}" class="bbp" style="display:flex;gap:16px;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.07);padding:18px 0;cursor:pointer;align-items:flex-start">
+<div style="flex:1;min-width:0">
+<div style="font-size:18px;line-height:1.24;font-weight:700;letter-spacing:-.6px;color:#fff;text-wrap:pretty">{{ r.title }}</div>
+<div style="margin-top:9px;font-size:13.5px;color:rgba(255,255,255,.38)">{{ r.byline }}</div>
+</div>
+<div style="flex:none;width:86px;height:86px;border-radius:16px;overflow:hidden;background:#111"><img src="{{ r.image }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+</button>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-if>
+
+<!-- ════════ SEARCH ════════ -->
+<sc-if value="{{ isSearch }}" hint-placeholder-val="{{ false }}">
+<div style="background:#000;padding:112px 20px 128px;min-height:874px">
+<h1 style="margin:0;font-size:36px;line-height:1.04;letter-spacing:-1.7px;font-weight:800">Explore</h1>
+<div style="display:flex;align-items:center;gap:11px;margin-top:20px;height:50px;padding:0 16px;border-radius:15px;background:#141416">
+<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2.1" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.8-3.8"></path></svg>
+<input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Stories, desks, writers" style="flex:1;min-width:0;background:none;border:none;outline:none;color:#fff;font-family:inherit;font-size:17px;letter-spacing:-.3px">
+</div>
+<sc-if value="{{ hasResults }}" hint-placeholder-val="{{ true }}">
+<div style="margin-top:14px">
+<sc-for list="{{ searchResults }}" as="r" hint-placeholder-count="4">
+<button onClick="{{ r.open }}" class="bbp" style="display:flex;gap:14px;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.07);padding:15px 0;cursor:pointer;align-items:center">
+<div style="flex:none;width:62px;height:62px;border-radius:14px;overflow:hidden;background:#111"><img src="{{ r.image }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+<div style="flex:1;min-width:0">
+<div style="font-size:11.5px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:{{ r.hue }};margin-bottom:6px">{{ r.section }}</div>
+<div style="font-size:16px;line-height:1.26;font-weight:600;letter-spacing:-.4px;color:#fff;text-wrap:pretty">{{ r.title }}</div>
+</div>
+</button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:20px;padding:28px 24px;border-radius:22px;background:#0e0e10">
+<div style="font-size:20px;font-weight:700;letter-spacing:-.7px">Nothing on that yet.</div>
+<div style="margin-top:10px;font-size:15.5px;line-height:1.55;color:rgba(255,255,255,.45);text-wrap:pretty">No story matches that search. If you think it should exist, pitch it — student reporters pick up reader suggestions every week.</div>
+<button onClick="{{ goPitch }}" class="bbp" style="margin-top:18px;height:46px;padding:0 20px;border-radius:14px;border:none;background:#ffc48f;color:#1b1206;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">Pitch this story</button>
+</div>
+</sc-if>
+<h2 style="margin:34px 0 4px;font-size:22px;font-weight:700;letter-spacing:-.8px">Trending</h2>
+<div>
+<sc-for list="{{ trending }}" as="t" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:16px;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.07)">
+<span style="flex:none;font-family:'Consolas',ui-monospace,Menlo,monospace;font-size:13px;color:rgba(255,255,255,.26);width:20px;font-variant-numeric:tabular-nums">{{ t.n }}</span>
+<span style="flex:1;font-size:17px;font-weight:600;letter-spacing:-.4px;color:#fff">{{ t.term }}</span>
+<span style="flex:none;font-size:13.5px;font-weight:600;color:{{ t.hue }}">{{ t.delta }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- ════════ SAVED ════════ -->
+<sc-if value="{{ isSaved }}" hint-placeholder-val="{{ false }}">
+<div style="background:#000;padding:112px 20px 128px;min-height:874px">
+<h1 style="margin:0;font-size:36px;line-height:1.04;letter-spacing:-1.7px;font-weight:800">Saved</h1>
+<div style="margin-top:22px;padding:22px;border-radius:24px;background:#0b1410">
+<div style="font-size:12px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:#65d68a">Read-later queue</div>
+<div style="margin-top:11px;font-size:23px;font-weight:700;letter-spacing:-.9px">{{ queueLine }}</div>
+<div style="margin-top:8px;font-size:15px;line-height:1.5;color:rgba(255,255,255,.42)">Roughly one bus ride. All of it cached for offline.</div>
+</div>
+<sc-if value="{{ savedEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:16px;padding:28px 24px;border-radius:22px;background:#0e0e10">
+<div style="font-size:20px;font-weight:700;letter-spacing:-.7px">Nothing saved yet.</div>
+<div style="margin-top:10px;font-size:15.5px;line-height:1.55;color:rgba(255,255,255,.45);text-wrap:pretty">Tap the bookmark on any story and it lands here, cached for the bus, the metro or a dead patch of signal.</div>
+</div>
+</sc-if>
+<div style="margin-top:14px">
+<sc-for list="{{ savedRows }}" as="r" hint-placeholder-count="3">
+<div style="display:flex;gap:14px;align-items:center;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.07)">
+<button onClick="{{ r.open }}" class="bbp" style="display:flex;gap:14px;flex:1;min-width:0;align-items:center;background:none;border:none;padding:0;cursor:pointer;text-align:left">
+<div style="flex:none;width:66px;height:66px;border-radius:14px;overflow:hidden;background:#111"><img src="{{ r.image }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+<div style="flex:1;min-width:0">
+<div style="font-size:11.5px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:{{ r.hue }};margin-bottom:6px">{{ r.section }}</div>
+<div style="font-size:16px;line-height:1.26;font-weight:600;letter-spacing:-.4px;color:#fff;text-wrap:pretty">{{ r.title }}</div>
+</div>
+</button>
+<button onClick="{{ r.remove }}" class="bbp" style="flex:none;width:34px;height:34px;border-radius:17px;border:none;background:#161618;cursor:pointer;display:flex;align-items:center;justify-content:center">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2.4" stroke-linecap="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg>
+</button>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- ════════ ALERTS ════════ -->
+<sc-if value="{{ isNotifications }}" hint-placeholder-val="{{ false }}">
+<div style="background:#000;padding:112px 20px 128px;min-height:874px">
+<div style="display:flex;align-items:flex-end;gap:12px">
+<h1 style="margin:0;flex:1;font-size:36px;line-height:1.04;letter-spacing:-1.7px;font-weight:800">Alerts</h1>
+<button class="bbp" style="font-size:15px;font-weight:600;color:#ffc48f;background:none;border:none;cursor:pointer;padding:4px 0;font-family:inherit">Mark all read</button>
+</div>
+<div style="margin-top:22px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ alerts }}" as="a" hint-placeholder-count="5">
+<div style="display:flex;gap:14px;padding:18px;border-radius:20px;background:{{ a.bg }};align-items:flex-start">
+<div style="flex:1;min-width:0">
+<div style="font-size:16.5px;line-height:1.32;font-weight:600;letter-spacing:-.4px;color:#fff;text-wrap:pretty">{{ a.title }}</div>
+<div style="margin-top:7px;font-size:14.5px;line-height:1.5;color:rgba(255,255,255,.45);text-wrap:pretty">{{ a.body }}</div>
+<div style="margin-top:11px;font-family:'Consolas',ui-monospace,Menlo,monospace;font-size:11.5px;color:rgba(255,255,255,.28)">{{ a.stamp }}</div>
+</div>
+<sc-if value="{{ a.unread }}" hint-placeholder-val="{{ false }}"><span style="flex:none;width:9px;height:9px;border-radius:5px;background:#ff3b30;margin-top:7px"></span></sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- ════════ OPPORTUNITIES ════════ -->
+<sc-if value="{{ isOpportunities }}" hint-placeholder-val="{{ false }}">
+<div style="background:#000;padding:112px 20px 128px;min-height:874px">
+<h1 style="margin:0;font-size:36px;line-height:1.04;letter-spacing:-1.7px;font-weight:800">Opportunities</h1>
+<p style="margin:12px 0 0;font-size:17px;line-height:1.55;color:rgba(255,255,255,.5);text-wrap:pretty">Grants, internships and programmes open to students right now. Deadlines counted down, not buried.</p>
+<div style="margin-top:24px;display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ opportunities }}" as="o" hint-placeholder-count="4">
+<div style="padding:22px;border-radius:24px;background:#0e0e10">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="font-size:11.5px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:{{ o.hue }}">{{ o.type }}</span>
+<span style="margin-left:auto;font-family:'Consolas',ui-monospace,Menlo,monospace;font-size:12.5px;color:{{ o.urgency }};font-variant-numeric:tabular-nums">{{ o.countdown }}</span>
+</div>
+<div style="margin-top:12px;font-size:21px;line-height:1.2;font-weight:700;letter-spacing:-.8px;text-wrap:pretty">{{ o.title }}</div>
+<div style="margin-top:10px;font-size:15.5px;line-height:1.5;color:rgba(255,255,255,.45);text-wrap:pretty">{{ o.body }}</div>
+<div style="margin-top:18px;display:flex;align-items:center;gap:12px">
+<span style="font-size:13.5px;color:rgba(255,255,255,.34)">{{ o.meta }}</span>
+<button class="bbp" style="margin-left:auto;height:38px;padding:0 18px;border-radius:19px;border:none;background:#1c1c20;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Details</button>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- ════════ AUTHOR ════════ -->
+<sc-if value="{{ isAuthor }}" hint-placeholder-val="{{ false }}">
+<div style="background:#000;padding:114px 20px 128px;min-height:874px">
+<div style="display:flex;align-items:center;gap:17px">
+<div style="flex:none;width:76px;height:76px;border-radius:38px;background:linear-gradient(145deg,#ffc48f,#f09a63);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#1b1206">AV</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:27px;font-weight:800;letter-spacing:-1.3px">Aarav Venkat</div>
+<div style="margin-top:5px;font-size:14.5px;font-weight:500;color:#83adff">Space desk · since 2024</div>
+</div>
+</div>
+<p style="margin:20px 0 0;font-size:17px;line-height:1.58;color:rgba(255,255,255,.58);text-wrap:pretty">Sixteen, tracks launch manifests for fun, and has been wrong about exactly two slip predictions. Covers ISRO, rideshare payloads and the people who build to a schedule.</p>
+<button onClick="{{ toggleFollow }}" class="bbp" style="width:100%;height:50px;margin-top:22px;border-radius:15px;border:none;background:{{ followBg }};color:{{ followFg }};font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:-.3px">{{ followLabel }}</button>
+<div style="display:flex;margin-top:14px;border-radius:20px;background:#0e0e10;overflow:hidden">
+<sc-for list="{{ authorStats }}" as="d" hint-placeholder-count="3">
+<div style="flex:1;padding:18px 10px;text-align:center">
+<div style="font-family:'Consolas',ui-monospace,Menlo,monospace;font-size:21px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums">{{ d.value }}</div>
+<div style="margin-top:6px;font-size:12.5px;color:rgba(255,255,255,.34)">{{ d.label }}</div>
+</div>
+</sc-for>
+</div>
+<h2 style="margin:34px 0 4px;font-size:22px;font-weight:700;letter-spacing:-.8px">Recent filings</h2>
+<div>
+<sc-for list="{{ authorStories }}" as="r" hint-placeholder-count="3">
+<button onClick="{{ r.open }}" class="bbp" style="display:flex;gap:14px;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.07);padding:16px 0;cursor:pointer;align-items:center">
+<div style="flex:1;min-width:0">
+<div style="font-size:16.5px;line-height:1.26;font-weight:600;letter-spacing:-.45px;color:#fff;text-wrap:pretty">{{ r.title }}</div>
+<div style="margin-top:8px;font-family:'Consolas',ui-monospace,Menlo,monospace;font-size:11.5px;color:rgba(255,255,255,.3)">{{ r.stamp }}</div>
+</div>
+<div style="flex:none;width:60px;height:60px;border-radius:13px;overflow:hidden;background:#111"><img src="{{ r.image }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<!-- ════════ PITCH ════════ -->
+<sc-if value="{{ isPitch }}" hint-placeholder-val="{{ false }}">
+<div style="background:#000;padding:114px 20px 128px;min-height:874px">
+<h1 style="margin:0;font-size:36px;line-height:1.05;font-weight:800;letter-spacing:-1.8px;text-wrap:balance">Pitch a story.</h1>
+<p style="margin:14px 0 0;font-size:17px;line-height:1.55;color:rgba(255,255,255,.5);text-wrap:pretty">Anyone can file. An editor reads every pitch within two days and replies either way.</p>
+<div style="margin-top:30px;display:flex;flex-direction:column;gap:24px">
+<div>
+<div style="font-size:15px;font-weight:600;color:rgba(255,255,255,.45);margin-bottom:10px">Working headline</div>
+<input value="{{ pitchTitle }}" onChange="{{ onPitchTitle }}" placeholder="One line. What happened?" style="width:100%;box-sizing:border-box;height:52px;padding:0 17px;border-radius:15px;background:#141416;border:none;color:#fff;font-family:inherit;font-size:17px;outline:none;letter-spacing:-.3px">
+</div>
+<div>
+<div style="font-size:15px;font-weight:600;color:rgba(255,255,255,.45);margin-bottom:10px">Which desk</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{ pitchDesks }}" as="d" hint-placeholder-count="6">
+<button onClick="{{ d.pick }}" class="bbp" style="height:44px;padding:0 17px;border-radius:22px;cursor:pointer;background:{{ d.bg }};border:none;color:{{ d.fg }};font-size:15px;font-weight:600;font-family:inherit;letter-spacing:-.3px">{{ d.label }}</button>
+</sc-for>
+</div>
+</div>
+<div>
+<div style="display:flex;align-items:baseline;margin-bottom:10px"><span style="flex:1;font-size:15px;font-weight:600;color:rgba(255,255,255,.45)">Why it matters</span><span style="font-family:'Consolas',ui-monospace,Menlo,monospace;font-size:12px;color:rgba(255,255,255,.28);font-variant-numeric:tabular-nums">{{ pitchCount }}</span></div>
+<textarea value="{{ pitchBody }}" onChange="{{ onPitchBody }}" placeholder="Three sentences is plenty. What is new, who it affects, and how you know." style="width:100%;box-sizing:border-box;height:140px;padding:16px 17px;border-radius:15px;background:#141416;border:none;color:#fff;font-family:inherit;font-size:17px;line-height:1.55;outline:none;resize:none"></textarea>
+</div>
+<button onClick="{{ submitPitch }}" class="bbp" style="width:100%;height:54px;border-radius:16px;border:none;background:{{ pitchBtnBg }};color:{{ pitchBtnFg }};font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:-.3px">{{ pitchBtnLabel }}</button>
+</div>
+</div>
+</sc-if>
+
+<!-- ════════ PROFILE ════════ -->
+<sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+<div style="background:#000;padding:112px 20px 128px;min-height:874px">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="flex:none;width:64px;height:64px;border-radius:32px;background:linear-gradient(145deg,#8fb4ff,#6f8fe0);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#0b1022">HS</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:26px;font-weight:800;letter-spacing:-1.2px">{{ profileName }}</div>
+<div style="margin-top:4px;font-size:14.5px;color:rgba(255,255,255,.38)">{{ profileSince }}</div>
+</div>
+<button onClick="{{ goSettings }}" class="bbp" style="flex:none;width:42px;height:42px;border-radius:21px;border:none;background:#141416;cursor:pointer;display:flex;align-items:center;justify-content:center">
+<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"></circle><path d="M12 3.6v2.1M12 18.3v2.1M20.4 12h-2.1M5.7 12H3.6M17.9 6.1l-1.5 1.5M7.6 16.4l-1.5 1.5M17.9 17.9l-1.5-1.5M7.6 7.6L6.1 6.1"></path></svg>
+</button>
+</div>
+<sc-if value="{{ isGuest }}" hint-placeholder-val="{{ true }}">
+<div style="margin-top:24px;padding:24px;border-radius:26px;background:#15110b">
+<div style="font-size:22px;line-height:1.18;font-weight:700;letter-spacing:-.9px;text-wrap:balance">Keep what you read.</div>
+<p style="margin:10px 0 0;font-size:15.5px;line-height:1.55;color:rgba(255,255,255,.5);text-wrap:pretty">Reading works without an account. Sign in to save stories, follow desks, build a streak and pitch to the newsroom.</p>
+<button onClick="{{ goAuth }}" class="bbp" style="width:100%;height:50px;margin-top:18px;border-radius:15px;border:none;background:#ffc48f;color:#1b1206;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:-.3px">Create a free account</button>
+</div>
+</sc-if>
+<sc-if value="{{ signedIn }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:24px;padding:24px;border-radius:26px;background:#15110b">
+<div style="font-size:12px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:#ffc48f">Current run</div>
+<div style="display:flex;align-items:baseline;gap:11px;margin-top:12px">
+<span style="font-family:'Consolas',ui-monospace,Menlo,monospace;font-size:52px;font-weight:700;color:#fff;letter-spacing:-3px;font-variant-numeric:tabular-nums;line-height:1">{{ streak }}</span>
+<span style="font-size:17px;font-weight:600;color:rgba(255,255,255,.5)">days unbroken</span>
+</div>
+<div style="display:flex;gap:6px;margin-top:20px">
+<sc-for list="{{ weekDots }}" as="w" hint-placeholder-count="7">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px">
+<span style="width:100%;height:30px;border-radius:9px;background:{{ w.fill }}"></span>
+<span style="font-size:11.5px;font-weight:600;color:rgba(255,255,255,.28)">{{ w.day }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;gap:10px;margin-top:12px">
+<sc-for list="{{ profileStats }}" as="p" hint-placeholder-count="3">
+<div style="flex:1;padding:18px 14px;border-radius:20px;background:#0e0e10">
+<div style="font-family:'Consolas',ui-monospace,Menlo,monospace;font-size:23px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums">{{ p.value }}</div>
+<div style="margin-top:7px;font-size:12.5px;line-height:1.35;color:rgba(255,255,255,.34)">{{ p.label }}</div>
+</div>
+</sc-for>
+</div>
+<h2 style="margin:34px 0 18px;font-size:22px;font-weight:700;letter-spacing:-.8px">What you read most</h2>
+<div style="display:flex;flex-direction:column;gap:16px">
+<sc-for list="{{ readMix }}" as="m" hint-placeholder-count="4">
+<div>
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:9px">
+<span style="font-size:15px;font-weight:600;letter-spacing:-.3px;color:#fff">{{ m.label }}</span>
+<span style="margin-left:auto;font-family:'Consolas',ui-monospace,Menlo,monospace;font-size:12.5px;color:rgba(255,255,255,.34);font-variant-numeric:tabular-nums">{{ m.pct }}</span>
+</div>
+<div style="height:7px;border-radius:4px;background:rgba(255,255,255,.07);overflow:hidden"><div style="height:100%;border-radius:4px;width:{{ m.w }}%;background:{{ m.hue }}"></div></div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<button onClick="{{ goPitch }}" class="bbp" style="width:100%;margin-top:30px;display:flex;align-items:center;gap:14px;padding:18px;border-radius:20px;background:#0e0e10;border:none;color:#fff;cursor:pointer;text-align:left;font-family:inherit">
+<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ffc48f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4.2L16.6 4.2a2.1 2.1 0 013 3L8 18.9 4 20z"></path></svg>
+<span style="flex:1;font-size:16.5px;font-weight:600;letter-spacing:-.4px">Pitch a story</span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2.3" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"></path></svg>
+</button>
+</div>
+</sc-if>
+
+<!-- ════════ SETTINGS ════════ -->
+<sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+<div style="background:#000;padding:114px 20px 128px;min-height:874px">
+<h1 style="margin:0;font-size:36px;line-height:1.04;letter-spacing:-1.7px;font-weight:800">Settings</h1>
+<div style="margin-top:26px;display:flex;flex-direction:column;gap:28px">
+<sc-for list="{{ settingsGroups }}" as="g" hint-placeholder-count="3">
+<div>
+<div style="font-size:12px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:rgba(255,255,255,.34);margin:0 4px 11px">{{ g.title }}</div>
+<div style="border-radius:18px;background:#0e0e10;overflow:hidden">
+<sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:14px;padding:15px 17px;min-height:54px;box-shadow:inset 0 -1px 0 rgba(255,255,255,.05)">
+<div style="flex:1;min-width:0">
+<div style="font-size:16.5px;font-weight:500;letter-spacing:-.4px;color:#fff">{{ r.label }}</div>
+<sc-if value="{{ r.hint }}" hint-placeholder-val="{{ false }}"><div style="margin-top:5px;font-size:13.5px;line-height:1.45;color:rgba(255,255,255,.34)">{{ r.hint }}</div></sc-if>
+</div>
+<sc-if value="{{ r.isToggle }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ r.toggle }}" style="flex:none;width:51px;height:31px;border-radius:16px;border:none;cursor:pointer;background:{{ r.trackBg }};position:relative;padding:0;transition:background .22s ease">
+<span style="position:absolute;top:2px;left:{{ r.knobX }}px;width:27px;height:27px;border-radius:14px;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.28);transition:left .22s cubic-bezier(.3,.9,.3,1)"></span></button>
+</sc-if>
+<sc-if value="{{ r.value }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font-size:15.5px;color:rgba(255,255,255,.34)">{{ r.value }}</span></sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+<div>
+<div style="font-size:12px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:rgba(255,255,255,.34);margin:0 4px 11px">Reading layout</div>
+<div style="display:flex;gap:4px;padding:4px;border-radius:16px;background:#0e0e10">
+<sc-for list="{{ layoutOptions }}" as="o" hint-placeholder-count="3">
+<button onClick="{{ o.pick }}" class="bbp" style="flex:1;height:42px;border-radius:12px;border:none;cursor:pointer;background:{{ o.bg }};color:{{ o.fg }};font-size:14.5px;font-weight:600;font-family:inherit;letter-spacing:-.3px">{{ o.label }}</button>
+</sc-for>
+</div>
+<div style="margin:11px 4px 0;font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.34);text-wrap:pretty">{{ layoutHint }}</div>
+</div>
+
+<div>
+<div style="font-size:12px;font-weight:700;letter-spacing:.9px;text-transform:uppercase;color:rgba(255,255,255,.34);margin:0 4px 11px">About</div>
+<div style="border-radius:18px;background:#0e0e10;overflow:hidden">
+<button onClick="{{ goPrivacy }}" class="bbp" style="display:flex;width:100%;align-items:center;gap:14px;padding:15px 17px;min-height:54px;background:none;border:none;box-shadow:inset 0 -1px 0 rgba(255,255,255,.05);cursor:pointer;font-family:inherit;text-align:left">
+<span style="flex:1;font-size:16.5px;font-weight:500;letter-spacing:-.4px;color:#fff">Privacy policy</span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="2.3" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"></path></svg>
+</button>
+<sc-if value="{{ signedIn }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ signOut }}" class="bbp" style="display:flex;width:100%;align-items:center;padding:15px 17px;min-height:54px;background:none;border:none;box-shadow:inset 0 -1px 0 rgba(255,255,255,.05);cursor:pointer;font-family:inherit;text-align:left">
+<span style="flex:1;font-size:16.5px;font-weight:500;letter-spacing:-.4px;color:#fff">Sign out</span>
+</button>
+<button onClick="{{ goDelete }}" class="bbp" style="display:flex;width:100%;align-items:center;gap:14px;padding:15px 17px;min-height:54px;background:none;border:none;cursor:pointer;font-family:inherit;text-align:left">
+<span style="flex:1;font-size:16.5px;font-weight:500;letter-spacing:-.4px;color:#ff3b30">Delete account</span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,59,48,.45)" stroke-width="2.3" stroke-linecap="round"><path d="M9.5 5.5L16 12l-6.5 6.5"></path></svg>
+</button>
+</sc-if>
+</div>
+</div>
+
+<div style="text-align:center;padding-top:8px">
+<img src="https://cdn.hackclub.com/019eb6cc-8925-7919-8d68-9add6a3d295f/bitbuzz_kids_logo.jpg" alt="BitBuzz" style="width:44px;height:44px;border-radius:22px">
+<div style="margin-top:12px;font-size:13px;color:rgba(255,255,255,.26);line-height:1.6">BitBuzz 1.0.0 (24)<br>Built by students, for students.</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+</div>
+
+<!-- ════════ NAV BAR MATERIAL ════════ -->
+<sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;top:0;left:0;right:0;z-index:40;pointer-events:none">
+<div style="position:absolute;top:0;left:0;right:0;height:96px;background:rgba(12,12,14,.72);backdrop-filter:saturate(180%) blur(22px);-webkit-backdrop-filter:saturate(180%) blur(22px);box-shadow:inset 0 -1px 0 rgba(255,255,255,.08);opacity:{{ navOpacity }};transition:opacity .16s linear"></div>
+<div style="position:relative;height:96px;display:flex;align-items:flex-end;padding:0 12px 10px;gap:8px">
+<sc-if value="{{ canGoBack }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ goBack }}" class="bbp" style="pointer-events:auto;flex:none;width:36px;height:36px;border-radius:18px;border:none;background:rgba(40,40,44,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;display:flex;align-items:center;justify-content:center">
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5L8 12l6.5 6.5"></path></svg>
+</button>
+</sc-if>
+<div style="flex:1;min-width:0;text-align:center;font-size:16px;font-weight:600;letter-spacing:-.4px;color:#fff;opacity:{{ navOpacity }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-bottom:1px">{{ navTitle }}</div>
+<sc-if value="{{ isReader }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ toggleSave }}" class="bbp" style="pointer-events:auto;flex:none;width:36px;height:36px;border-radius:18px;border:none;background:rgba(40,40,44,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;display:flex;align-items:center;justify-content:center">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="{{ saveFill }}" stroke="{{ saveStroke }}" stroke-width="2" stroke-linejoin="round"><path d="M6.5 4.5h11v16l-5.5-4-5.5 4v-16z"></path></svg>
+</button>
+<button onClick="{{ share }}" class="bbp" style="pointer-events:auto;flex:none;width:36px;height:36px;border-radius:18px;border:none;background:rgba(40,40,44,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;display:flex;align-items:center;justify-content:center">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15.5V3.8"></path><path d="M8.2 7.4L12 3.6l3.8 3.8"></path><path d="M5.2 13v6.2a1.5 1.5 0 001.5 1.5h10.6a1.5 1.5 0 001.5-1.5V13"></path></svg>
+</button>
+<button onClick="{{ openReport }}" class="bbp" style="pointer-events:auto;flex:none;width:36px;height:36px;border-radius:18px;border:none;background:rgba(40,40,44,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;display:flex;align-items:center;justify-content:center">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><circle cx="5.5" cy="12" r="1.7"></circle><circle cx="12" cy="12" r="1.7"></circle><circle cx="18.5" cy="12" r="1.7"></circle></svg>
+</button>
+</sc-if>
+<sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ goSearch }}" class="bbp" style="pointer-events:auto;flex:none;width:36px;height:36px;border-radius:18px;border:none;background:rgba(40,40,44,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;display:flex;align-items:center;justify-content:center">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.8-3.8"></path></svg>
+</button>
+<button onClick="{{ goNotifications }}" class="bbp" style="pointer-events:auto;position:relative;flex:none;width:36px;height:36px;border-radius:18px;border:none;background:rgba(40,40,44,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:pointer;display:flex;align-items:center;justify-content:center">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.2 16.3v-4.9a6.2 6.2 0 10-12.4 0v4.9L4.2 18.8h15.6l-1.6-2.5z"></path><path d="M10 21a2.3 2.3 0 004 0"></path></svg>
+<span style="position:absolute;top:-2px;right:-3px;min-width:19px;height:19px;padding:0 5px;box-sizing:border-box;border-radius:10px;background:#ff3b30;box-shadow:0 0 0 2.5px #0b0b0d;display:flex;align-items:center;justify-content:center;font-family:'Consolas',ui-monospace,Menlo,monospace;font-size:11px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;line-height:1">{{ unreadCount }}</span>
+</button>
+</sc-if>
+</div>
+<sc-if value="{{ isReader }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:96px;left:0;right:0;height:2px;background:rgba(255,255,255,.06);opacity:{{ navOpacity }}"><div style="height:100%;background:#ffc48f;width:{{ progressPct }}%"></div></div>
+</sc-if>
+</div>
+</sc-if>
+
+<!-- ════════ TAB BAR ════════ -->
+<sc-if value="{{ showTabs }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;left:0;right:0;bottom:0;z-index:50;background:rgba(12,12,14,.78);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);padding:9px 6px 26px;display:flex">
+<button onClick="{{ tabToday }}" style="flex:1;height:48px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0">
+<svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="{{ cToday }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="4.6" width="17.6" height="14.8" rx="3.2"></rect><path d="M7 9.4h6.6M7 13.4h10"></path></svg>
+<span style="font-size:10.5px;font-weight:600;letter-spacing:-.1px;color:{{ cToday }}">Today</span>
+</button>
+<button onClick="{{ tabExplore }}" style="flex:1;height:48px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0">
+<svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="{{ cExplore }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.4"></circle><path d="M15.2 8.8l-1.8 4.6-4.6 1.8 1.8-4.6 4.6-1.8z"></path></svg>
+<span style="font-size:10.5px;font-weight:600;letter-spacing:-.1px;color:{{ cExplore }}">Explore</span>
+</button>
+<button onClick="{{ tabOpps }}" style="flex:1;height:48px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0">
+<svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="{{ cOpps }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6l2 5.2 5.2 2-5.2 2-2 5.2-2-5.2-5.2-2 5.2-2 2-5.2z"></path></svg>
+<span style="font-size:10.5px;font-weight:600;letter-spacing:-.1px;color:{{ cOpps }}">Opportunities</span>
+</button>
+<button onClick="{{ tabSaved }}" style="flex:1;height:48px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0">
+<svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="{{ cSaved }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6.4 4.6h11.2v15.2L12 15.9l-5.6 3.9V4.6z"></path></svg>
+<span style="font-size:10.5px;font-weight:600;letter-spacing:-.1px;color:{{ cSaved }}">Saved</span>
+</button>
+<button onClick="{{ tabProfile }}" style="flex:1;height:48px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0">
+<svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="{{ cProfile }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.4" r="3.8"></circle><path d="M4.9 20c.9-3.5 3.7-5.5 7.1-5.5s6.2 2 7.1 5.5"></path></svg>
+<span style="font-size:10.5px;font-weight:600;letter-spacing:-.1px;color:{{ cProfile }}">You</span>
+</button>
+</div>
+</sc-if>
+
+<!-- ════════ SHEETS ════════ -->
+<sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:80;display:flex;flex-direction:column;justify-content:flex-end">
+<button onClick="{{ closeSheet }}" style="position:absolute;inset:0;border:none;padding:0;background:rgba(0,0,0,.62);cursor:pointer;animation:bbScrim .2s ease"></button>
+<div style="position:relative;background:#18181b;border-radius:30px 30px 0 0;padding:10px 20px 34px;animation:bbSheet .28s cubic-bezier(.2,.9,.3,1);max-height:760px;overflow-y:auto">
+<div style="width:38px;height:5px;border-radius:3px;background:rgba(255,255,255,.18);margin:0 auto 20px"></div>
+
+<sc-if value="{{ isSigninSheet }}" hint-placeholder-val="{{ true }}">
+<h2 style="margin:0;font-size:27px;line-height:1.1;letter-spacing:-1.3px;font-weight:800;text-wrap:balance">{{ sheetTitle }}</h2>
+<p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:rgba(255,255,255,.5);text-wrap:pretty">{{ sheetBody }}</p>
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:24px">
+<button onClick="{{ sheetToAuth }}" class="bbp" style="width:100%;height:52px;border-radius:15px;border:none;background:#fff;color:#000;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;letter-spacing:-.3px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M16.3 12.7c0-2 1.6-3 1.7-3-.9-1.4-2.4-1.5-2.9-1.6-1.2-.1-2.4.7-3 .7-.6 0-1.6-.7-2.6-.7-1.3 0-2.6.8-3.2 2-1.4 2.4-.4 6 1 8 .7 1 1.5 2.1 2.5 2 1-.1 1.4-.6 2.6-.6s1.5.6 2.6.6c1.1 0 1.8-1 2.4-2 .8-1.1 1.1-2.2 1.1-2.3 0 0-2.2-.8-2.2-3.1zM14.4 6.4c.5-.6.9-1.5.8-2.4-.8 0-1.8.5-2.3 1.2-.5.6-.9 1.5-.8 2.4.9.1 1.8-.5 2.3-1.2z"></path></svg>
+Continue with Apple</button>
+<button onClick="{{ sheetToAuth }}" class="bbp" style="width:100%;height:52px;border-radius:15px;border:none;background:#242428;color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;letter-spacing:-.3px">
+<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.7h5.4a4.6 4.6 0 01-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z"></path><path fill="#34A853" d="M12 22c2.7 0 5-.9 6.6-2.5l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0012 22z"></path><path fill="#FBBC05" d="M6.4 13.9a6 6 0 010-3.8V7.5H3.1a10 10 0 000 9l3.3-2.6z"></path><path fill="#EA4335" d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.8-2.8A10 10 0 003.1 7.5l3.3 2.6C7.2 7.7 9.4 5.9 12 5.9z"></path></svg>
+Continue with Google</button>
+<button onClick="{{ sheetToAuth }}" class="bbp" style="width:100%;height:52px;border-radius:15px;border:none;background:#242428;color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:-.3px">Continue with email</button>
+</div>
+<button onClick="{{ closeSheet }}" class="bbp" style="width:100%;height:50px;margin-top:10px;border-radius:15px;border:none;background:none;color:rgba(255,255,255,.5);font-size:16px;font-weight:600;cursor:pointer;font-family:inherit">Not now</button>
+<p style="margin:16px 0 0;text-align:center;font-size:13px;line-height:1.55;color:rgba(255,255,255,.3);text-wrap:pretty">Reading never needs an account. <a href="#" onClick="{{ goPrivacy }}" style="color:#ffc48f;font-weight:600">Privacy notice</a></p>
+</sc-if>
+
+<sc-if value="{{ isReportSheet }}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{ reportSent }}" hint-placeholder-val="{{ false }}">
+<div style="padding:8px 0 4px;text-align:center">
+<div style="width:52px;height:52px;border-radius:26px;background:#16241c;display:flex;align-items:center;justify-content:center;margin:0 auto">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7ee0a1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+</div>
+<h2 style="margin:18px 0 0;font-size:23px;line-height:1.15;letter-spacing:-1px;font-weight:700">Report sent.</h2>
+<p style="margin:10px 0 0;font-size:15.5px;line-height:1.55;color:rgba(255,255,255,.5);text-wrap:pretty">An editor reviews every report. If we take something down you will hear back at the email on your account.</p>
+<button onClick="{{ closeSheet }}" class="bbp" style="width:100%;height:52px;margin-top:22px;border-radius:15px;border:none;background:#242428;color:#fff;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit">Done</button>
+</div>
+</sc-if>
+<sc-if value="{{ reportOpen }}" hint-placeholder-val="{{ true }}">
+<h2 style="margin:0;font-size:25px;line-height:1.12;letter-spacing:-1.1px;font-weight:800">Report this story</h2>
+<p style="margin:11px 0 0;font-size:15.5px;line-height:1.5;color:rgba(255,255,255,.5);text-wrap:pretty">Tell us what is wrong with it. Reports are read by a BitBuzz editor, not an automated system.</p>
+<div style="display:flex;flex-direction:column;gap:7px;margin-top:20px">
+<sc-for list="{{ reportReasons }}" as="r" hint-placeholder-count="5">
+<button onClick="{{ r.pick }}" class="bbp" style="display:flex;align-items:center;gap:13px;width:100%;padding:15px 16px;min-height:54px;border-radius:15px;border:none;background:{{ r.bg }};cursor:pointer;font-family:inherit;text-align:left">
+<span style="flex:none;width:20px;height:20px;border-radius:10px;border:2px solid {{ r.ring }};background:{{ r.dot }};box-sizing:border-box"></span>
+<span style="flex:1;font-size:16px;font-weight:500;letter-spacing:-.3px;color:#fff">{{ r.label }}</span>
+</button>
+</sc-for>
+</div>
+<textarea value="{{ reportNote }}" onChange="{{ onReportNote }}" placeholder="Add anything an editor should know (optional)" style="width:100%;box-sizing:border-box;height:92px;margin-top:12px;padding:15px 16px;border-radius:15px;background:#242428;border:none;color:#fff;font-family:inherit;font-size:16px;line-height:1.5;outline:none;resize:none"></textarea>
+<button onClick="{{ submitReport }}" class="bbp" style="width:100%;height:52px;margin-top:14px;border-radius:15px;border:none;background:{{ reportBtnBg }};color:{{ reportBtnFg }};font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:-.3px">Send report</button>
+<div style="height:1px;background:rgba(255,255,255,.08);margin:22px 0"></div>
+<button onClick="{{ toggleBlock }}" class="bbp" style="display:flex;align-items:center;gap:13px;width:100%;padding:15px 16px;min-height:54px;border-radius:15px;border:none;background:#242428;cursor:pointer;font-family:inherit;text-align:left">
+<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"></circle><path d="M6 6l12 12"></path></svg>
+<span style="flex:1;font-size:16px;font-weight:600;letter-spacing:-.3px;color:#ff3b30">{{ blockLabel }}</span>
+</button>
+<p style="margin:11px 2px 0;font-size:13px;line-height:1.5;color:rgba(255,255,255,.3);text-wrap:pretty">Blocking hides every story by this writer from your feed, search and desks. You can undo it in Settings.</p>
+<button onClick="{{ closeSheet }}" class="bbp" style="width:100%;height:50px;margin-top:12px;border-radius:15px;border:none;background:none;color:rgba(255,255,255,.5);font-size:16px;font-weight:600;cursor:pointer;font-family:inherit">Cancel</button>
+</sc-if>
+</sc-if>
+
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-import>
+
+<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:680px">
+<sc-for list="{{ screenNav }}" as="s" hint-placeholder-count="14">
+<button onClick="{{ s.go }}" class="bbp" style="border:none;background:{{ s.bg }};color:{{ s.fg }};font-size:12px;font-weight:600;letter-spacing:-.1px;padding:7px 12px;border-radius:8px;cursor:pointer;font-family:inherit">{{ s.label }}</button>
+</sc-for>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;readerVariant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;immersive&quot;,&quot;focus&quot;,&quot;briefing&quot;],&quot;default&quot;:&quot;immersive&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Reader&quot;},&quot;showDailyBuzz&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Feed&quot;},&quot;streakDays&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:7,&quot;min&quot;:0,&quot;max&quot;:365,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Feed&quot;}}">
+const IMG = {
+  space: 'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?auto=format&fit=crop&w=1400&q=85',
+  cyber: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=1000&q=85',
+  tech: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=85',
+  aviation: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1000&q=85',
+  innovation: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1000&q=85',
+};
+const HUE = { SPACE:'#9dbcff', CYBERSECURITY:'#ff9aa8', TECH:'#c4acff', AVIATION:'#7ee0a1', INNOVATION:'#ffc48f', BIOLOGY:'#7fdfd0' };
+const CAP = { SPACE:'Space', CYBERSECURITY:'Cybersecurity', TECH:'Technology', AVIATION:'Aviation', INNOVATION:'Innovation', BIOLOGY:'Biology' };
+const ARTICLES = [
+  { id:'a1', section:'SPACE', img:IMG.space, read:6, stamp:'16 Sep · 06:40',
+    title:'Chandrayaan-4 gets its launch window, and a public deadline',
+    standfirst:'The nine-day band was published before the hardware was signed off. Engineers say the order of those two events changes how the whole programme runs.',
+    caption:'Integration floor, clean room two. The descent radar has the shortest test queue.',
+    author:'Aarav Venkat', initials:'AV' },
+  { id:'a2', section:'CYBERSECURITY', img:IMG.cyber, read:4, stamp:'16 Sep · 05:12',
+    title:'The teen-run CTF that found a real bug in a banking app',
+    standfirst:'A weekend capture-the-flag built by four sixteen-year-olds turned up a session handling flaw. The disclosure took longer than the discovery.',
+    caption:'The team ran the event from a school computer lab over two nights.',
+    author:'Meera Iqbal', initials:'MI' },
+  { id:'a3', section:'AVIATION', img:IMG.aviation, read:7, stamp:'15 Sep · 19:30',
+    title:'Why every airline is suddenly ordering the same engine',
+    standfirst:'Fleet planning has quietly collapsed into a single supplier decision. The reasons are boring, and that is exactly the problem.',
+    caption:'Narrow-body deliveries now cluster around one powerplant family.',
+    author:'Dev Ramanathan', initials:'DR' },
+  { id:'a4', section:'TECH', img:IMG.tech, read:8, stamp:'15 Sep · 14:05',
+    title:'What the new chip export rules actually change',
+    standfirst:'Stripping the politics out: three things are newly restricted, and two things people assume are restricted are not.',
+    caption:'Fabrication tooling, not finished chips, is where most of the new text lands.',
+    author:'Sara Kulkarni', initials:'SK' },
+  { id:'a5', section:'INNOVATION', img:IMG.innovation, read:3, stamp:'15 Sep · 09:48',
+    title:'A student-built satellite is now in orbit, and transmitting',
+    standfirst:'Two years, one school lab and a rideshare slot. The first telemetry packet came down eleven hours after separation.',
+    caption:'The bus was assembled from commercially available parts.',
+    author:'Ishan Mehta', initials:'IM' },
+  { id:'a6', section:'BIOLOGY', img:IMG.tech, read:5, stamp:'14 Sep · 17:22',
+    title:"CRISPR's quiet year, explained without the hype",
+    standfirst:'Fewer headlines, more approvals. What actually moved in gene editing while everyone was looking elsewhere.',
+    caption:'Clinical pipelines matured faster than the coverage suggested.',
+    author:'Nadia Rao', initials:'NR' },
+];
+const INTERESTS = [
+  { id:'space', name:'Space', dot:HUE.SPACE }, { id:'cyber', name:'Cybersecurity', dot:HUE.CYBERSECURITY },
+  { id:'tech', name:'Technology', dot:HUE.TECH }, { id:'aviation', name:'Aviation', dot:HUE.AVIATION },
+  { id:'innovation', name:'Innovation', dot:HUE.INNOVATION }, { id:'biology', name:'Biology', dot:HUE.BIOLOGY },
+  { id:'science', name:'Science', dot:'#ffd98a' }, { id:'climate', name:'Climate', dot:'#8fd9b6' },
+];
+const TABS = { today:'today', explore:'search', opportunities:'opportunities', saved:'saved', profile:'profile' };
+
+class Component extends DCLogic {
+  scrollRef = React.createRef();
+  state = {
+    screen:'today', tab:'today', variant:'immersive', articleId:'a1',
+    saved:['a3'], interests:['space','cyber','tech'], scrollY:0, progress:0,
+    following:false, reaction:null, buzzDone:3, query:'',
+    pitchTitle:'', pitchBody:'', pitchDesk:'SPACE', pitchSent:false,
+    authMode:'signin', authEmail:'', authPassword:'', authConfirm:'', authError:'', authMessage:'', privacyFrom:'settings',
+    signedIn:false, sheet:null, sheetReason:'save', reportReason:null, reportNote:'', reportSent:false, blocked:false, deleteConfirm:'',
+    toggles:{ digest:true, breaking:true, desk:false, offline:true, haptics:true, reduce:false },
+  };
+
+  componentDidMount() { if (this.props.readerVariant) this.setState({ variant: this.props.readerVariant }); }
+
+  go = (screen) => {
+    const tab = Object.keys(TABS).find(k => TABS[k] === screen);
+    this.setState(s => ({ screen, tab: tab || s.tab, scrollY:0, progress:0 }));
+    if (this.scrollRef.current) this.scrollRef.current.scrollTop = 0;
+  };
+  open = (id) => { this.setState({ screen:'reader', articleId:id, scrollY:0, progress:0 }); if (this.scrollRef.current) this.scrollRef.current.scrollTop = 0; };
+  onScroll = (e) => {
+    const el = e.currentTarget; const max = el.scrollHeight - el.clientHeight;
+    this.setState({ scrollY: el.scrollTop, progress: max > 0 ? Math.min(100, (el.scrollTop / max) * 100) : 0 });
+  };
+  toggleInterest = (id) => this.setState(s => ({ interests: s.interests.includes(id) ? s.interests.filter(x => x !== id) : [...s.interests, id] }));
+  toggleSave = () => this.setState(s => ({ saved: s.saved.includes(s.articleId) ? s.saved.filter(x => x !== s.articleId) : [s.articleId, ...s.saved] }));
+  gate = (reason, action) => this.state.signedIn ? action() : this.setState({ sheet:'signin', sheetReason:reason });
+  closeSheet = () => this.setState({ sheet:null, reportSent:false, reportReason:null, reportNote:'' });
+  setAuthMode = (authMode) => this.setState({ authMode, authPassword:'', authConfirm:'', authError:'', authMessage:'' });
+  authSubmit = () => {
+    const { authMode, authEmail, authPassword, authConfirm } = this.state;
+    const email = authEmail.trim().toLowerCase();
+    if (!email) return this.setState({ authError:'Enter your email address.', authMessage:'' });
+    if (authMode === 'forgot') return this.setState({ authError:'', authMessage:"If an account exists for that email, we've sent a password reset link. Check your inbox and spam folder." });
+    if (authPassword.length < 6) return this.setState({ authError:'Your password must be at least 6 characters.', authMessage:'' });
+    if (authMode === 'signup' && authPassword !== authConfirm) return this.setState({ authError:'The passwords do not match.', authMessage:'' });
+    this.setState({ authError:'', authMessage:'', signedIn:true });
+    this.go(authMode === 'signup' ? 'onboarding' : 'today');
+  };
+
+  renderVals() {
+    const s = this.state;
+    const art = ARTICLES.find(a => a.id === s.articleId) || ARTICLES[0];
+    const lead = ARTICLES[0];
+    const isSaved = s.saved.includes(s.articleId);
+    const streakDays = this.props.streakDays ?? 7;
+    const q = s.query.trim().toLowerCase();
+    const results = q ? ARTICLES.filter(a => (a.title + ' ' + a.standfirst + ' ' + a.section + ' ' + a.author).toLowerCase().includes(q)) : ARTICLES;
+    const savedList = s.saved.map(id => ARTICLES.find(a => a.id === id)).filter(Boolean);
+    const savedMinutes = savedList.reduce((t, a) => t + a.read, 0);
+    const byline = (a) => `${a.author} · ${a.read} min read`;
+    const pill = (on) => on
+      ? { bg:'#ffc48f', fg:'#1b1206' }
+      : { bg:'#161618', fg:'rgba(255,255,255,.72)' };
+    const reader = s.screen === 'reader';
+    const heroScreen = reader ? (s.variant === 'immersive') : s.screen === 'section';
+    const navStart = heroScreen ? 300 : 56;
+    const navOpacity = Math.max(0, Math.min(1, (s.scrollY - navStart * 0.45) / (navStart * 0.45)));
+
+    const screens = [['auth','Sign in'],['onboarding','Onboarding'],['today','Today'],['reader','Reader'],['section','Desk'],['search','Explore'],['saved','Saved'],['notifications','Alerts'],['opportunities','Opportunities'],['author','Author'],['pitch','Pitch'],['profile','You'],['settings','Settings'],['privacy','Privacy'],['delete','Delete account']];
+    const unread = 2;
+    const deleteArmed = s.deleteConfirm.trim().toUpperCase() === 'DELETE';
+    const layoutCopy = { immersive:'A full-bleed cover the headline sits inside. Right for the lead story.', focus:'Text first. The cover is demoted to a captioned thumbnail. Widest measure, least chrome.', briefing:'A thirty-second summary, then titled sections that each close with why it matters.' };
+    const tabColor = (id) => s.tab === id ? '#ffc48f' : 'rgba(255,255,255,.36)';
+
+    return {
+      scrollRef:this.scrollRef, onScroll:this.onScroll,
+      screenNav: screens.map(([id,label]) => ({ id, label, go:() => this.go(id),
+        bg: s.screen === id ? '#ffc48f' : '#161618', fg: s.screen === id ? '#1b1206' : 'rgba(255,255,255,.66)' })),
+
+      isOnboarding:s.screen==='onboarding', isToday:s.screen==='today', isReader:reader,
+      isSection:s.screen==='section', isSearch:s.screen==='search', isSaved:s.screen==='saved',
+      isNotifications:s.screen==='notifications', isOpportunities:s.screen==='opportunities',
+      isAuthor:s.screen==='author', isPitch:s.screen==='pitch', isProfile:s.screen==='profile', isSettings:s.screen==='settings',
+      isAuth:s.screen==='auth', isPrivacy:s.screen==='privacy',
+
+      showTabs: ['today','search','section','saved','opportunities','profile','notifications'].includes(s.screen),
+      showNav: !['onboarding','auth'].includes(s.screen),
+      navOpacity,
+      navTitle: reader ? CAP[art.section] : ({ today:'Today', section:'Space', search:'Explore', saved:'Saved', notifications:'Alerts', opportunities:'Opportunities', author:'Aarav Venkat', pitch:'Pitch a story', profile:'You', settings:'Settings', privacy:'Privacy Policy', delete:'Delete account' }[s.screen] || ''),
+      canGoBack: ['reader','section','author','pitch','settings','privacy','delete'].includes(s.screen),
+      goBack: () => this.go(s.screen === 'settings' ? 'profile' : s.screen === 'delete' ? 'settings' : s.screen === 'privacy' ? s.privacyFrom : 'today'),
+      unreadCount:`${unread}`,
+
+      authTitle: s.authMode === 'signup' ? 'Join BitBuzz.' : s.authMode === 'forgot' ? 'Reset your password.' : 'Welcome back.',
+      authSubtitle: s.authMode === 'signup' ? 'Create your account to save stories, follow desks and pitch to the newsroom.' : s.authMode === 'forgot' ? "Enter your email and we'll send you a secure reset link." : 'Sign in to pick up your reading where you left it.',
+      authTabsVisible: s.authMode !== 'forgot', authIsSignup: s.authMode === 'signup',
+      authIsSignin: s.authMode === 'signin', authIsForgot: s.authMode === 'forgot',
+      authNeedsPassword: s.authMode !== 'forgot',
+      tabSigninBg: s.authMode === 'signin' ? '#fff' : 'transparent', tabSigninFg: s.authMode === 'signin' ? '#000' : 'rgba(255,255,255,.45)',
+      tabSignupBg: s.authMode === 'signup' ? '#fff' : 'transparent', tabSignupFg: s.authMode === 'signup' ? '#000' : 'rgba(255,255,255,.45)',
+      authSignin:() => this.setAuthMode('signin'), authSignup:() => this.setAuthMode('signup'), authForgot:() => this.setAuthMode('forgot'),
+      authEmail:s.authEmail, onAuthEmail:(e) => this.setState({ authEmail:e.target.value, authError:'' }),
+      authPassword:s.authPassword, onAuthPassword:(e) => this.setState({ authPassword:e.target.value, authError:'' }),
+      authConfirm:s.authConfirm, onAuthConfirm:(e) => this.setState({ authConfirm:e.target.value, authError:'' }),
+      authError:s.authError, authMessage:s.authMessage,
+      authCta: s.authMode === 'signup' ? 'Create account' : s.authMode === 'forgot' ? 'Send reset link' : 'Sign in',
+      authSubmit:this.authSubmit, authProvider:() => { this.setState({ signedIn:true }); this.go('onboarding'); },
+      goAuth:() => { this.setState({ sheet:null }); this.go('auth'); },
+      signOut:() => { this.setAuthMode('signin'); this.setState({ signedIn:false }); this.go('today'); },
+      signedIn:s.signedIn, isGuest:!s.signedIn,
+      profileName: s.signedIn ? 'Hridhaan S' : 'Reading as a guest',
+      profileSince: s.signedIn ? 'Reading since March' : 'No account needed to read',
+
+      isDelete:s.screen==='delete', goDelete:() => this.go('delete'),
+      deleteRemoves: [
+        { text:'Your account, email address and sign-in method.' },
+        { text:'Saved stories, reading history, streak and interests.' },
+        { text:'Pitches you sent that have not been published.' },
+        { text:'Reactions and reports tied to your account.' },
+      ],
+      deleteConfirm:s.deleteConfirm, onDeleteConfirm:(e) => this.setState({ deleteConfirm:e.target.value }),
+      deleteBtnLabel: deleteArmed ? 'Delete my account permanently' : 'Delete my account permanently',
+      deleteBtnBg: deleteArmed ? '#ff3b30' : '#1c1c20', deleteBtnFg: deleteArmed ? '#fff' : 'rgba(255,255,255,.3)',
+      confirmDelete:() => { if (deleteArmed) { this.setState({ signedIn:false, deleteConfirm:'', saved:[] }); this.go('today'); } },
+
+      sheetOpen: !!s.sheet, closeSheet:this.closeSheet,
+      isSigninSheet: s.sheet === 'signin', isReportSheet: s.sheet === 'report',
+      sheetTitle: ({ follow:'Follow this desk?', pitch:'Pitch a story?', react:'React to this story?' }[s.sheetReason]) || 'Create a free account',
+      sheetBody: ({ follow:'Following puts a desk at the top of your feed and tells you when it publishes. That needs an account to remember.',
+        pitch:'Pitches go to a real editor, so we need a way to reply to you.',
+        react:'Reactions tell editors which stories landed. One account, one vote.' }[s.sheetReason]) || 'It takes ten seconds and reading never needs one.',
+      sheetToAuth:() => { this.setState({ sheet:null }); this.go('auth'); },
+
+      openReport:() => this.setState({ sheet:'report', reportSent:false, reportReason:null, reportNote:'' }),
+      reportOpen: !s.reportSent, reportSent: s.reportSent,
+      reportReasons: ['Inaccurate or misleading','Hateful or abusive','Spam or advertising','Copyright or plagiarism','Something else'].map(label => {
+        const on = s.reportReason === label;
+        return { label, pick:() => this.setState({ reportReason:label }),
+          bg: on ? '#2a2119' : '#242428', ring: on ? '#ffc48f' : 'rgba(255,255,255,.28)', dot: on ? '#ffc48f' : 'transparent' };
+      }),
+      reportNote:s.reportNote, onReportNote:(e) => this.setState({ reportNote:e.target.value }),
+      reportBtnBg: s.reportReason ? '#ffc48f' : '#1c1c20', reportBtnFg: s.reportReason ? '#1b1206' : 'rgba(255,255,255,.3)',
+      submitReport:() => { if (s.reportReason) this.setState({ reportSent:true }); },
+      blockLabel: s.blocked ? `Unblock ${art.author}` : `Block ${art.author}`,
+      toggleBlock:() => this.setState(v => ({ blocked: !v.blocked })),
+      goPrivacy:() => this.setState(v => ({ privacyFrom: v.screen === 'auth' ? 'auth' : 'settings', screen:'privacy', scrollY:0, progress:0 }, () => { if (this.scrollRef.current) this.scrollRef.current.scrollTop = 0; })),
+
+      layoutOptions: [['immersive','Immersive'],['focus','Focus'],['briefing','Briefing']].map(([id,label]) => ({
+        label, pick:() => this.setState({ variant:id }),
+        bg: s.variant === id ? '#ffc48f' : 'transparent', fg: s.variant === id ? '#1b1206' : 'rgba(255,255,255,.55)' })),
+      layoutHint: layoutCopy[s.variant],
+
+      privacySections: [
+        { title:'1. What this policy covers', paras:[{ text:'This policy explains how BitBuzz handles personal information when you create or use a BitBuzz account, submit content, or use account-enabled features on our website.' }] },
+        { title:'2. Information we collect', paras:[{ text:'When you create an account, we collect your name and email address. We also process the information needed to keep your account signed in and to provide the features you request.' }] },
+        { title:'3. Why we use it', paras:[{ text:'We use account information to create and authenticate your account, identify you inside BitBuzz, provide account-enabled features, communicate about your account when necessary, and protect the service from misuse.' }] },
+        { title:'4. Chanakya AI', paras:[
+          { text:"BitBuzz's Chanakya AI assistant can process the prompts you submit to generate answers, perform web-supported research, and provide fact-checking assistance. Chanakya may send your prompt to third-party AI and web-search services needed to provide the requested response." },
+          { text:'We also log Chanakya prompts and limited usage information so we can understand how the assistant is being used, troubleshoot it, measure usage, and improve the product. Usage information can include the prompt, time, broad topic/category, whether web search or fact-checking was used, the AI model used, and request latency.' },
+          { text:'Raw Chanakya prompts are restricted to authorized BitBuzz super-admin analytics. They are not intended to be public, sold, or used for targeted advertising. We intend to retain raw prompt history only for a limited operational period and may retain aggregated, non-identifying usage statistics for longer.' },
+          { text:'Please do not submit passwords, API keys, private messages, financial information, or other sensitive information to Chanakya. Chanakya is an AI system and may make mistakes; verify important information independently.' } ] },
+        { title:'5. Where account and service data is stored', paras:[{ text:'BitBuzz uses Supabase for authentication and database services. Personal information is only sent to service providers needed to operate the features described here, and we aim to limit the information shared to what is necessary.' }] },
+        { title:'6. Your choices', paras:[
+          { text:'You can ask us what personal information we hold about your account, request correction of inaccurate information, or ask for your account information to be deleted, subject to applicable legal or operational requirements.' },
+          { text:'For privacy requests, contact Hi@Hridhaan.me.' } ] },
+        { title:'7. Young users', paras:[{ text:"BitBuzz is designed for students and may be used by people under 18. We do not use a child's account information for targeted advertising. Because Indian data-protection law contains additional requirements for processing children's personal data, including parental or guardian consent requirements, BitBuzz will implement the applicable safeguards before relying on account processing for children where those requirements apply." }] },
+        { title:'8. Changes', paras:[{ text:"We may update this policy when BitBuzz's features, data practices, or applicable law changes. The latest version will always be published on this page." }] },
+      ],
+
+      tabToday:() => this.go('today'), tabExplore:() => this.go('search'), tabOpps:() => this.go('opportunities'),
+      tabSaved:() => this.go('saved'), tabProfile:() => this.go('profile'),
+      cToday:tabColor('today'), cExplore:tabColor('explore'), cOpps:tabColor('opportunities'),
+      cSaved:tabColor('saved'), cProfile:tabColor('profile'),
+
+      interestChips: INTERESTS.map(i => ({ ...i, ...pill(s.interests.includes(i.id)),
+        dot: s.interests.includes(i.id) ? 'rgba(27,18,6,.55)' : i.dot, toggle:() => this.toggleInterest(i.id) })),
+      onboardCta: s.interests.length >= 3 ? 'Build my feed' : `Pick ${3 - s.interests.length} more`,
+      finishOnboarding:() => this.go('today'),
+
+      todayDate:'Wednesday 16 September',
+      showBuzz: this.props.showDailyBuzz ?? true,
+      buzzHeadline:'Five stories. Nine minutes. Then you are done.',
+      buzzPct: (s.buzzDone / 5) * 100, buzzCount:`${s.buzzDone}/5`,
+      buzzCta:`Continue — ${9 - s.buzzDone * 2} min left`,
+      continueBuzz:() => this.open('a2'),
+
+      leadImage:lead.img, leadHue:HUE[lead.section], leadSection:CAP[lead.section],
+      leadTitle:lead.title, leadByline:byline(lead), openLead:() => this.open(lead.id),
+      feedRows: ARTICLES.slice(1).map(a => ({ ...a, hue:HUE[a.section], section:CAP[a.section], image:a.img, byline:byline(a), open:() => this.open(a.id) })),
+      deskCards: [['SPACE',IMG.space],['CYBERSECURITY',IMG.cyber],['AVIATION',IMG.aviation],['TECH',IMG.tech],['INNOVATION',IMG.innovation],['BIOLOGY',IMG.tech]]
+        .map(([k,image]) => ({ label:CAP[k], image, go:() => this.go('section') })),
+
+      goSearch:() => this.go('search'), goNotifications:() => this.go('notifications'),
+      goProfile:() => this.go('profile'), goSettings:() => this.go('settings'),
+      goPitch:() => this.gate('pitch', () => this.go('pitch')), goAuthor:() => this.go('author'), share:() => {},
+
+      vImmersive:s.variant==='immersive', vFocus:s.variant==='focus', vBriefing:s.variant==='briefing',
+      showProse: s.variant !== 'briefing',
+      artImage:art.img, artHue:HUE[art.section], artSection:CAP[art.section],
+      artTitle:art.title, artStandfirst:art.standfirst, artCaption:art.caption,
+      artAuthor:art.author, artInitials:art.initials, artStamp:`${art.stamp} · ${art.read} min read`,
+      progressPct:s.progress,
+      toggleSave:this.toggleSave,
+      saveFill: isSaved ? '#ffc48f' : 'none', saveStroke: isSaved ? '#ffc48f' : '#fff',
+      toggleFollow:() => this.gate('follow', () => this.setState(v => ({ following: !v.following }))),
+      followLabel: s.following ? 'Following' : 'Follow',
+      followDeskLabel: s.following ? 'Following this desk' : 'Follow this desk',
+      followBg: s.following ? '#1c1c20' : '#ffc48f', followFg: s.following ? '#fff' : '#1b1206',
+
+      keyPoints: [
+        { text:'The launch window is a nine-day band next March, published before hardware sign-off.' },
+        { text:'Three subsystems sit on the critical path; the descent radar has the least flight heritage.' },
+        { text:'A public date turns an open engineering problem into a queue suppliers can plan against.' },
+      ],
+      briefSections: [
+        { title:'The window', body:'A nine-day band opens next March. Publishing it ahead of hardware sign-off is the unusual part, not the date itself.', why:'Public dates change internal behaviour. Reviews get much harder to skip.' },
+        { title:'The critical path', body:'Three subsystems govern the schedule. The descent radar keeps coming up because it has the shortest test queue and the least heritage.', why:'Slip risk concentrates in one component, which makes it forecastable.' },
+        { title:'What a deadline buys', body:'Suppliers get shifts they can plan. The review board gets a reason to refuse late changes. Both are scheduling wins, not engineering ones.', why:'Most programme delays are queueing problems wearing an engineering costume.' },
+      ],
+      reactions: ['Sharp','Learned something','Not sure'].map(label => {
+        const on = s.reaction === label;
+        return { label, pick:() => this.gate('react', () => this.setState({ reaction: on ? null : label })),
+          bg: on ? '#ffc48f' : '#141416', fg: on ? '#1b1206' : 'rgba(255,255,255,.8)' };
+      }),
+      buzzRemaining:`${5 - s.buzzDone} left today`,
+      nextUp: ARTICLES.slice(1,3).map(a => ({ ...a, hue:HUE[a.section], section:CAP[a.section], image:a.img, open:() => this.open(a.id) })),
+
+      query:s.query, onQuery:(e) => this.setState({ query:e.target.value }),
+      searchResults: results.map(a => ({ ...a, hue:HUE[a.section], section:CAP[a.section], image:a.img, open:() => this.open(a.id) })),
+      hasResults: results.length > 0, noResults: results.length === 0,
+      trending: [['1','Chandrayaan-4','#7ee0a1','+412%'],['2','Student CTF','#7ee0a1','+188%'],['3','Chip export rules','#ffc48f','+64%'],['4','Gene editing','#9dbcff','+21%'],['5','Engine orders','#9dbcff','New']]
+        .map(([n,term,hue,delta]) => ({ n, term, hue, delta })),
+
+      queueLine:`${savedList.length} ${savedList.length === 1 ? 'story' : 'stories'}, ${savedMinutes} minutes`,
+      savedRows: savedList.map(a => ({ ...a, hue:HUE[a.section], section:CAP[a.section], image:a.img,
+        open:() => this.open(a.id), remove:() => this.setState(v => ({ saved: v.saved.filter(x => x !== a.id) })) })),
+      savedEmpty: savedList.length === 0,
+
+      alerts: [
+        { title:'Your morning brief is ready', body:'Five stories, nine minutes. Two of them are from the Space desk you follow.', stamp:'07:00 · TODAY', unread:true },
+        { title:'Breaking on the Cybersecurity desk', body:'A student CTF disclosure has now been confirmed by the bank involved.', stamp:'05:12 · TODAY', unread:true },
+        { title:'Your pitch was picked up', body:'An editor assigned "Why school labs cannot buy their own sensors" to the Science desk.', stamp:'YESTERDAY · 18:40', unread:false },
+        { title:'Aarav Venkat filed a new story', body:'Chandrayaan-4 gets its launch window, and a public deadline.', stamp:'YESTERDAY · 06:40', unread:false },
+        { title:'Two opportunities close this week', body:'The ISRO student payload programme and the Hack Club Summer Grant.', stamp:'14 SEP · 11:02', unread:false },
+      ].map(a => ({ ...a, bg: a.unread ? '#15110b' : '#0e0e10' })),
+
+      opportunities: [
+        { type:'Grant', hue:'#7ee0a1', title:'Hack Club Summer Grant', body:'Up to $500 in hardware for a student-led build. No school affiliation needed, one page of writing.', meta:'Ages 13–18 · Global', countdown:'4d 11h left', urgency:'#ff9aa8' },
+        { type:'Programme', hue:'#9dbcff', title:'ISRO student payload slot', body:'Six teams get a cubesat rideshare berth and a mentor from the launch operations group.', meta:'Ages 15–19 · India', countdown:'21d left', urgency:'rgba(255,255,255,.42)' },
+        { type:'Internship', hue:'#c4acff', title:'Security research shadow week', body:'Five days alongside a disclosure team. Remote, unpaid, references provided.', meta:'Ages 16+ · Remote', countdown:'9d left', urgency:'#ffc48f' },
+        { type:'Competition', hue:'#ffc48f', title:'National science writing prize', body:'Eight hundred words on any research paper published this year. Winners run on BitBuzz.', meta:'All students', countdown:'36d left', urgency:'rgba(255,255,255,.42)' },
+      ],
+
+      authorStats: [{ value:'41', label:'Stories' },{ value:'2.1K', label:'Readers' },{ value:'96%', label:'Finish rate' }],
+      authorStories: ARTICLES.slice(0,3).map(a => ({ ...a, image:a.img, stamp:`${a.stamp} · ${a.read} min`, open:() => this.open(a.id) })),
+
+      pitchTitle:s.pitchTitle, onPitchTitle:(e) => this.setState({ pitchTitle:e.target.value, pitchSent:false }),
+      pitchBody:s.pitchBody, onPitchBody:(e) => this.setState({ pitchBody:e.target.value, pitchSent:false }),
+      pitchCount:`${s.pitchBody.length}/400`,
+      pitchDesks: ['SPACE','CYBERSECURITY','TECH','AVIATION','INNOVATION','BIOLOGY'].map(d => ({
+        label:CAP[d], ...pill(s.pitchDesk === d), pick:() => this.setState({ pitchDesk:d }) })),
+      submitPitch:() => this.setState({ pitchSent:true }),
+      pitchBtnLabel: s.pitchSent ? 'Sent — an editor replies in two days' : 'Send to the newsroom',
+      pitchBtnBg: s.pitchSent ? '#16241c' : '#ffc48f', pitchBtnFg: s.pitchSent ? '#7ee0a1' : '#1b1206',
+
+      streak:`${streakDays}`,
+      weekDots: [['M',1],['T',1],['W',1],['T',1],['F',1],['S',1],['S',0]].map(([day,on]) => ({ day, fill: on ? '#ffc48f' : 'rgba(255,255,255,.09)' })),
+      profileStats: [{ value:'128', label:'Stories read' },{ value:'9.4h', label:'Time reading' },{ value:'23', label:'Saved' }],
+      readMix: [['Space',HUE.SPACE,42],['Technology',HUE.TECH,26],['Cybersecurity',HUE.CYBERSECURITY,19],['Aviation',HUE.AVIATION,13]]
+        .map(([label,hue,w]) => ({ label, hue, w, pct:`${w}%` })),
+
+      settingsGroups: [
+        { title:'Notifications', rows:[
+          { key:'digest', label:'Morning brief at 07:00', hint:'One nudge a day, when your five stories are ready.' },
+          { key:'breaking', label:'Breaking on followed desks' },
+          { key:'desk', label:'Every story on followed desks', hint:'Off by default. This one gets noisy.' } ] },
+        { title:'Reading', rows:[
+          { key:'offline', label:'Cache saved stories offline' },
+          { key:'haptics', label:'Haptic feedback' },
+          { key:'reduce', label:'Reduce motion' } ] },
+        { title:'Account', rows:[
+          { label:'Signed in as', value:'Hridhaan' },
+          { label:'Interests', value:`${s.interests.length} desks` },
+          { label:'Appearance', value:'Dark' } ] },
+      ].map(g => ({ ...g, rows: g.rows.map(r => {
+        if (!r.key) return { label:r.label, hint:'', value:r.value, isToggle:false };
+        const on = s.toggles[r.key];
+        return { label:r.label, hint:r.hint || '', value:'', isToggle:true,
+          trackBg: on ? '#ffc48f' : 'rgba(255,255,255,.16)', knobX: on ? 22 : 2,
+          toggle:() => this.setState(v => ({ toggles:{ ...v.toggles, [r.key]: !v.toggles[r.key] } })) };
+      }) })),
+
+
+    };
+  }
+}
+</script>
+</body>
+</html>
