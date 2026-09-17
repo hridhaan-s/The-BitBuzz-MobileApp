@@ -1,14 +1,20 @@
 export const colors = {
-  bg: '#050505',
-  surface: '#0c0c0d',
+  bg: '#000000',
+  surface: '#0e0e10',
   surface2: '#141416',
+  surface3: '#1c1c20',
+  accentSurface: '#15110b',
+  greenSurface: '#0b1410',
   text: '#ffffff',
-  muted: 'rgba(255,255,255,0.62)',
-  faint: 'rgba(255,255,255,0.38)',
-  line: 'rgba(255,255,255,0.10)',
+  textSecondary: 'rgba(255,255,255,0.86)',
+  muted: 'rgba(255,255,255,0.50)',
+  faint: 'rgba(255,255,255,0.34)',
+  line: 'rgba(255,255,255,0.07)',
   accent: '#ffc48f',
+  onAccent: '#1b1206',
+  alert: '#ff3b30',
   blue: '#83adff',
-  green: '#65d68a',
+  green: '#7ee0a1',
 };
 
 export const media = {
@@ -21,4 +27,4 @@ export const media = {
   innovation: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1000&q=85',
 };
 
-export const spacing = { page: 20, card: 16, section: 30 };
+export const spacing = { page: 20, card: 16, section: 34 };
