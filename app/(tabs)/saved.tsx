@@ -8,55 +8,14 @@ import { getSavedArticles, SavedArticle } from '../../src/lib/bookmarks';
 export default function Saved() {
   const [saved, setSaved] = useState<SavedArticle[]>([]);
   const [loading, setLoading] = useState(true);
-
-  useFocusEffect(useCallback(() => {
-    let active = true;
-    setLoading(true);
-    getSavedArticles().then((items) => {
-      if (active) {
-        setSaved(items);
-        setLoading(false);
-      }
-    });
-    return () => { active = false; };
-  }, []));
-
-  return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-      <View style={styles.top}><Text style={styles.kicker}>YOUR LIBRARY</Text><Ionicons name="bookmark" size={20} color="#fff" /></View>
-      <Text style={styles.heading}>Saved.</Text>
-      <Text style={styles.sub}>Stories worth coming back to.</Text>
-      <View style={styles.segment}><View style={styles.active}><Text style={styles.activeText}>ARTICLES</Text></View><View style={styles.inactive}><Text style={styles.segmentText}>{saved.length} SAVED</Text></View></View>
-
-      {loading ? <ActivityIndicator color="#fff" style={{ marginTop: 60 }} /> : saved.length === 0 ? (
-        <View style={styles.empty}>
-          <View style={styles.emptyIcon}><Ionicons name="bookmark-outline" size={25} color="#fff" /></View>
-          <Text style={styles.emptyTitle}>Nothing saved yet.</Text>
-          <Text style={styles.emptyText}>Tap the bookmark on any BitBuzz story and it will stay here for later.</Text>
-          <Pressable onPress={() => router.push('/')} style={styles.browse}><Text style={styles.browseText}>BROWSE STORIES</Text><Ionicons name="arrow-forward" size={15} color="#000" /></Pressable>
-        </View>
-      ) : saved.map((item) => (
-        <Pressable key={item.id} style={({ pressed }) => [styles.card, pressed && { opacity: 0.72 }]} onPress={() => router.push(`/article/${item.slug}`)}>
-          {item.cover_image_url ? <Image source={{ uri: item.cover_image_url }} style={styles.image} /> : <View style={[styles.image, styles.imageFallback]}><Ionicons name="newspaper-outline" size={22} color={colors.faint} /></View>}
-          <View style={styles.copy}><Text style={styles.category}>{item.categories?.name || 'BITBUZZ'}</Text><Text style={styles.title}>{item.title}</Text><Text style={styles.meta}>Saved to your library</Text></View>
-          <Ionicons name="chevron-forward" size={17} color={colors.faint} />
-        </Pressable>
-      ))}
-
-      <View style={styles.quote}><Text style={styles.quoteText}>“Curiosity today. A better tomorrow.”</Text><Text style={styles.quoteBy}>— BITBUZZ</Text></View>
-    </ScrollView>
-  );
+  useFocusEffect(useCallback(() => { let active = true; setLoading(true); getSavedArticles().then(items => { if (active) { setSaved(items); setLoading(false); } }); return () => { active = false; }; }, []));
+  const minutes = saved.length * 5;
+  return <ScrollView style={styles.screen} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+    <Text style={styles.kicker}>YOUR LIBRARY</Text><Text style={styles.heading}>Saved</Text>
+    <View style={styles.queue}><Text style={styles.queueKicker}>READ-LATER QUEUE</Text><Text style={styles.queueTitle}>{saved.length} {saved.length === 1 ? 'story' : 'stories'}, {minutes} minutes</Text><Text style={styles.queueSub}>Keep the good stuff for the bus, the metro, or offline.</Text></View>
+    {loading ? <ActivityIndicator color={colors.accent} style={{marginTop:60}}/> : saved.length === 0 ? <View style={styles.empty}><View style={styles.icon}><Ionicons name="bookmark-outline" size={24} color={colors.accent}/></View><Text style={styles.emptyTitle}>Nothing saved yet.</Text><Text style={styles.emptyText}>Tap the bookmark on any BitBuzz story and it lands here.</Text><Pressable onPress={()=>router.push('/')} style={styles.cta}><Text style={styles.ctaText}>BROWSE STORIES</Text><Ionicons name="arrow-forward" size={15} color={colors.onAccent}/></Pressable></View> : saved.map(item => <Pressable key={item.id} onPress={()=>router.push(`/article/${item.slug}`)} style={({pressed})=>[styles.row,pressed&&{opacity:.65}]}><View style={styles.copy}><Text style={styles.category}>{item.categories?.name || 'BITBUZZ'}</Text><Text style={styles.title}>{item.title}</Text><Text style={styles.meta}>Saved · cached for later</Text></View>{item.cover_image_url ? <Image source={{uri:item.cover_image_url}} style={styles.image}/> : <View style={[styles.image,styles.fallback]}><Ionicons name="newspaper-outline" size={20} color={colors.faint}/></View>}<Ionicons name="chevron-forward" size={16} color={colors.faint}/></Pressable>)}
+    <View style={styles.footer}><Text style={styles.footerTitle}>Curiosity today.</Text><Text style={styles.footerText}>A better tomorrow.</Text></View>
+  </ScrollView>;
 }
-
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.bg }, content: { paddingHorizontal: spacing.page, paddingBottom: 60 },
-  top: { height: 58, borderBottomWidth: 1, borderBottomColor: colors.line, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  kicker: { color: colors.blue, fontSize: 9, fontWeight: '800', letterSpacing: 2 }, heading: { color: '#fff', fontSize: 46, fontWeight: '700', letterSpacing: -2.2, marginTop: 42 },
-  sub: { color: colors.muted, fontSize: 14, marginTop: 8 }, segment: { height: 48, borderRadius: 15, backgroundColor: colors.surface2, marginTop: 28, padding: 4, flexDirection: 'row' },
-  active: { flex: 1, backgroundColor: '#fff', borderRadius: 12, alignItems: 'center', justifyContent: 'center' }, activeText: { color: '#000', fontSize: 9, fontWeight: '800', letterSpacing: 1.2 }, inactive: { flex: 1, alignItems: 'center', justifyContent: 'center' }, segmentText: { color: colors.faint, fontSize: 9, fontWeight: '800', letterSpacing: 1.2 },
-  empty: { marginTop: 32, padding: 24, borderRadius: 24, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.surface, alignItems: 'center' }, emptyIcon: { width: 54, height: 54, borderRadius: 27, backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center' },
-  emptyTitle: { color: '#fff', fontSize: 20, fontWeight: '700', marginTop: 16 }, emptyText: { color: colors.muted, fontSize: 13, lineHeight: 20, textAlign: 'center', marginTop: 8 },
-  browse: { height: 44, paddingHorizontal: 16, borderRadius: 22, backgroundColor: '#fff', flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 18 }, browseText: { color: '#000', fontSize: 9, fontWeight: '900', letterSpacing: 1 },
-  card: { paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: colors.line, flexDirection: 'row', alignItems: 'center', gap: 12 }, image: { width: 82, height: 82, borderRadius: 16 }, imageFallback: { backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center' }, copy: { flex: 1 }, category: { color: colors.blue, fontSize: 8, fontWeight: '800', letterSpacing: 1.5 }, title: { color: '#fff', fontSize: 15, lineHeight: 19, fontWeight: '700', marginTop: 5 }, meta: { color: colors.faint, fontSize: 9, marginTop: 7 },
-  quote: { marginTop: 42, padding: 22, borderRadius: 22, borderWidth: 1, borderColor: colors.line, alignItems: 'center' }, quoteText: { color: '#fff', fontSize: 15, fontStyle: 'italic', textAlign: 'center' }, quoteBy: { color: colors.faint, fontSize: 8, fontWeight: '800', letterSpacing: 1.5, marginTop: 10 }
-});
+const styles=StyleSheet.create({screen:{flex:1,backgroundColor:colors.bg},content:{padding:112,paddingHorizontal:spacing.page,paddingBottom:128},kicker:{color:colors.green,fontSize:11.5,fontWeight:'700',letterSpacing:.9},heading:{color:colors.text,fontSize:36,lineHeight:37,fontWeight:'800',letterSpacing:-1.7,marginTop:5},queue:{marginTop:22,padding:22,borderRadius:24,backgroundColor:colors.greenSurface},queueKicker:{color:colors.green,fontSize:11.5,fontWeight:'700',letterSpacing:.9},queueTitle:{color:colors.text,fontSize:23,fontWeight:'700',letterSpacing:-.9,marginTop:11},queueSub:{color:colors.muted,fontSize:15,lineHeight:23,marginTop:8},empty:{marginTop:16,padding:28,backgroundColor:colors.surface,borderRadius:22,alignItems:'center'},icon:{width:52,height:52,borderRadius:26,backgroundColor:colors.surface2,alignItems:'center',justifyContent:'center'},emptyTitle:{color:colors.text,fontSize:20,fontWeight:'700',marginTop:16},emptyText:{color:colors.muted,fontSize:15.5,lineHeight:23,textAlign:'center',marginTop:9},cta:{marginTop:18,height:46,paddingHorizontal:20,borderRadius:15,backgroundColor:colors.accent,flexDirection:'row',alignItems:'center',gap:8},ctaText:{color:colors.onAccent,fontSize:12,fontWeight:'800',letterSpacing:.7},row:{minHeight:98,paddingVertical:16,borderBottomWidth:1,borderBottomColor:colors.line,flexDirection:'row',alignItems:'center',gap:12},copy:{flex:1,minWidth:0},category:{color:colors.blue,fontSize:11.5,fontWeight:'700',letterSpacing:.9},title:{color:colors.text,fontSize:16.5,lineHeight:21,fontWeight:'600',letterSpacing:-.4,marginTop:6},meta:{color:colors.faint,fontSize:12,marginTop:7},image:{width:66,height:66,borderRadius:14},fallback:{backgroundColor:colors.surface2,alignItems:'center',justifyContent:'center'},footer:{marginTop:40,padding:26,borderRadius:24,backgroundColor:colors.surface},footerTitle:{color:colors.text,fontSize:22,fontWeight:'700',letterSpacing:-.8},footerText:{color:colors.muted,fontSize:15,marginTop:5}}
+);
